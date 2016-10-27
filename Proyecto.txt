@@ -1,0 +1,48 @@
+
+Tipos
+ -int (soportar literal decimal,hexadecimal,octal
+ -float (agregar notacion de exponente a la literal)
+ -char (respetar caracteres de escape en la literal)
+ -bool
+ -string (este tipo es builtin de nosotros) (respetar caracteres de escape en la literal) 
+ -date (este tipo es builtin de nosotros) la constante seria #dd-MM-yyyy#
+ -arreglos
+ -enums
+ -struct
+ -apuntadores (de todo menos a funciones)
+ -const
+
+Sentencias
+ -if
+ -while
+ -do
+ -for
+ -switch
+ -foreach (se vera como el foreach de java)
+ -invocar funciones
+ -asignaciones
+ -break
+ -continue
+ -declaracion de variable con inicializacion opcional
+
+Operadores
+ -Asignacion
+ -Aritmeticos
+ -Relacionales
+ -bits
+ -pre y post incremento y acumulacion
+ - [] para el arreglo
+ - . y -> para los structs
+
+Funciones
+ -Parametros por valor y referencia
+
+Se va soportar #include para libs custom
+
+
+
+
+
+
+
+

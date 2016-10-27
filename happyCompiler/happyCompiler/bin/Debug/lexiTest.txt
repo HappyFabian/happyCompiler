@@ -1,0 +1,5 @@
+{ int 
+int float bool enum struct if do while switch foreach break continue
+date 000 00.00  + - * / %  ++ -- == <= >= < > != =; 
+"STRING" // DEBUGGY;
+//

@@ -1,0 +1,7 @@
+c:\users\happhfabian\documents\visual studio 2015\Projects\happyCompiler\happyCompiler\bin\Debug\happyCompiler.exe.config
+E:\happyCompiler\happyCompiler\bin\Debug\happyCompiler.exe.config
+E:\happyCompiler\happyCompiler\bin\Debug\happyCompiler.exe
+E:\happyCompiler\happyCompiler\bin\Debug\happyCompiler.pdb
+E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.csprojResolveAssemblyReference.cache
+E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.exe
+E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.pdb
