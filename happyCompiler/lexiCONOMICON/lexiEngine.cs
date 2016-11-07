@@ -7,6 +7,7 @@ using System.IO;
 
 namespace happyCompiler
 {
+    /*
     public class lexiEngine
     {
         private string _path;
@@ -33,8 +34,6 @@ namespace happyCompiler
             return character;
         }
 
-
-
         private int currentColumn = 0;
         private int currentRow = 0;
 
@@ -51,7 +50,7 @@ namespace happyCompiler
             _currentChar = advanceCursor();
             var currentLayer = _currentLayer.Last();
 
-            switch(currentLayer.LAYERNAME)
+            switch(currentLayer._layername)
             {
                 case "DEPTHCOMMENTLINE":
 
@@ -93,7 +92,7 @@ namespace happyCompiler
 
                     if (_currentChar == '}')
                     {
-                        if (currentLayer.LAYERNAME.Equals("DEPTHBLOCK"))
+                        if (currentLayer._layername.Equals("DEPTHBLOCK"))
                         {
                             _currentLayer.Remove(_currentLayer.Last());
                             return new tokenObject(tokenType.flow_blockClose, _currentChar.ToString(), lastTokenColumn, lastTokenRow);
@@ -288,7 +287,7 @@ namespace happyCompiler
             }
             
             
-            if (_currentLayer.Last().LAYERNAME != "DEPTHZERO")
+            if (_currentLayer.Last()._layername != "DEPTHZERO")
             {
                 throw new Exception("You are missing a closing token. ERROR AT" + _currentLayer.Last().coordinates.getColumn() + " - " + _currentLayer.Last().coordinates.getRow());
             }
@@ -309,4 +308,5 @@ namespace happyCompiler
             }
         }
     }
+    */
 }

@@ -5,3 +5,11 @@ E:\happyCompiler\happyCompiler\bin\Debug\happyCompiler.pdb
 E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.csprojResolveAssemblyReference.cache
 E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.exe
 E:\happyCompiler\happyCompiler\obj\Debug\happyCompiler.pdb
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\happyCompiler.exe.config
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\obj\Debug\happyCompiler.exe
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\obj\Debug\happyCompiler.pdb
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\obj\Debug\happyCompiler.csprojResolveAssemblyReference.cache
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\happyCompiler.exe
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\happyCompiler.pdb
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\lexiCONOMICON.dll
+C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\lexiCONOMICON.pdb

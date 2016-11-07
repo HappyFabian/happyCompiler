@@ -8,16 +8,16 @@ namespace happyCompiler
 {
     public class tokenContent
     {
-       private string Value;
+       private string _value;
         
        public void setValue(string VALUE)
         {
-            Value = VALUE;
+            _value = VALUE;
         } 
 
         public string getValue()
         {
-            return Value;
+            return _value;
         }
     }
 }

@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace happyCompiler
 {
-    public enum tokenType 
+    public enum tkanType 
     {
         //ID - 1
         ID,
-        //SIMPLE - 1
-        DIGIT,
-        STRINGLITERAL,
-        COMMENTCONTENT,
+        includedFILE,
+        //SIMPLE - 5
+        literalCHAR,
+        literalSTRING,
+        literalDECIMAL,
+        literalFLOAT,
+        literalOCTAL,
+        literalHEXADECIMAL,
+        literalDATE,
+        literalBOOL,
         //arithmetic - 7
         oper_ADDITION,
         oper_INCREASE,
@@ -32,6 +38,7 @@ namespace happyCompiler
         //logical - 2
         logicaloper_AND,
         logicaloper_OR,
+      //  logicaloper_NOT,
         //bitoper - 6
         bitoper_AND,
         bitoper_OR,
@@ -61,6 +68,7 @@ namespace happyCompiler
         resword_BREAK,
         resword_CONTINUE,
         resword_FUNCTION,
+        resword_INCLUDE,
         //flow - 6
         flow_paramOpen,
         flow_paramClose,
@@ -70,16 +78,28 @@ namespace happyCompiler
         flow_arrayClose,
         flow_blockOpen,
         flow_blockClose,
-
+        flow_fileOpen,
+        flow_fileClose,
+        flow_commentOpen,
+        flow_commentClose,
         //symbol - 7
+        symbol_HASHTAG,
         symbol_COMMENTLINE,
         symbol_SEPARATOR,
         symbol_DOT,
+        symbol_ARROW,
         symbol_ASSIGN,
-        symbol_CARRIAGERETURN,
         symbol_EOS, //END OF STATEMENT
-        symbol_EOF, //END OF FILE
-        symbol_EOL, //END OF LINE
+        escape_ALERT,
+        escape_BACKSPACE,
+        escape_FORMFEED,
+        escape_CARRIAGERETURN,
+        escape_HORIZONTALTAB,
+        escape_VERTICALTAB,
+        escape_BACKSLASH,
+        escape_QUESTIONMARK,
+        escape_endLINE, //END OF LINE
+        escape_endFILE, //END OF FILE
         NaN //SYMBOL DOES NOT EXIST. ERROR
     }
 }

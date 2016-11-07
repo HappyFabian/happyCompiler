@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using lexiCONOMICON;
 
 namespace happyCompiler
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
 
-            string path;
-            if(args.Length == 0){ path = "lexiTest.txt"; }
-            else { path = args[0]; }
-            var lexiEngine = new lexiEngine(path,Encoding.UTF8);
-            lexiEngine.generateTokens();
-            lexiEngine.printTokens();
+            var path = args.Length == 0 ? "lexiTest.txt" : args[0];
+            var lexiConomicon = new nlexiEngine(path,Encoding.UTF8);
+            lexiConomicon.GenerateAllTokens();
+            lexiConomicon.PrintTokens();
             Console.ReadKey();
 
         }
