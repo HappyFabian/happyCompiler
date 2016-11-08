@@ -80,6 +80,8 @@
         symbol_COMMENTLINE,
         symbol_HASHTAG,
         literal_CHARACTER,
-        literal_STRING
+        literal_STRING,
+        literal_FILENAME,
+        literal_DATE
     }
 }

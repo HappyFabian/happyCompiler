@@ -105,7 +105,7 @@ namespace happyCompiler
         {
             _symbols = new Dictionary<string, tokenType>();
             //7
-
+            _symbols.Add("#", tokenType.symbol_HASHTAG);
             _symbols.Add("//", tokenType.symbol_COMMENTLINE);     
             _symbols.Add("/*", tokenType.symbol_commentOpen);
             _symbols.Add("*/", tokenType.symbol_commentClose);

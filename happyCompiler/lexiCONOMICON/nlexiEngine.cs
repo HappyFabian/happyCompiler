@@ -208,6 +208,9 @@ namespace lexiCONOMICON
                 probableTokenType = _dictionary.identifySymbolAndPunctuation(_currentLexeme);
                 switch(_currentLexeme)
                 {
+                    case "<":
+                        if (char.IsLetter(_nextCharacterRead)) { return ProcessFileName(); }
+                        break;
                     case "\'":
                         return ProcessCharacter();
                         break;
@@ -216,8 +219,6 @@ namespace lexiCONOMICON
                         break;
                     case "#":
                         if (char.IsDigit(_nextCharacterRead)) { return ProcessDate(); }
-                        if (char.IsLetter(_nextCharacterRead)) { return ProcessInclude(); }
-                        throw new Exception("WRONG USE OF THE HASH TAG AT: " + _lastLocation);
                         break;
                 }
 
@@ -255,15 +256,46 @@ namespace lexiCONOMICON
             return newToken;
         }
 
-        private tokenObject ProcessDate()
+        private tokenObject ProcessFileName()
         {
-            throw new NotImplementedException();
+            _currentLexeme = _currentCharacterRead.ToString();
+            while (_nextCharacterRead != '>')
+            {
+                AdvanceCursors();
+                if (_currentCharacterRead == '\r' || _currentCharacterRead == '\n')
+                {
+                    throw new Exception("No Spaces or New Lines Permitted between File Names. AT:" + _lastLocation);
+                }
+                else
+                _currentLexeme += _currentCharacterRead.ToString();
+            }
+
+            AdvanceCursors();
+            _currentLexeme += _currentCharacterRead.ToString();
+            var newToken = new tokenObject(tokenType.literal_FILENAME, _currentLexeme, _lastLocation);
+            ClearContent();
+            return newToken;
         }
 
 
-        private tokenObject ProcessInclude()
+        private tokenObject ProcessDate()
         {
-            throw new NotImplementedException();
+            _currentLexeme = _currentCharacterRead.ToString();
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); } 
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (_nextCharacterRead == '-') { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (_nextCharacterRead == '-') { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (char.IsDigit(_nextCharacterRead)) { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+            if (_nextCharacterRead == '#') { AdvanceCursors(); _currentLexeme += _currentCharacterRead.ToString(); } else { throw new Exception("Wrong Date Format. Correct format is #DD-MM-YYYY#"); }
+
+            var newToken = new tokenObject(tokenType.literal_DATE, _currentLexeme, _lastLocation);
+            ClearContent();
+            return newToken;
         }
 
         private tokenObject ProcessString()
