@@ -74,7 +74,7 @@ namespace lexiCONOMICON
         private void AdvanceCursors(){ AdvanceCoordinateCursor();AdvanceReaderCursor();}
 
         private layerObject LastAddedLayer() { return _layerStack.Last(); }
-        private void AddLayer(string value) { _layerStack.Add(new layerObject(value, _currentLocation.DeepCopy())); }
+        private void AddLayer(string value) { _layerStack.Add(new layerObject(value, _lastLocation)); }
         private void PopLastLayer(){_layerStack.Remove(_layerStack.Last());}
         private void LogLastLayer(){Console.WriteLine(LastAddedLayer().ToString());}
 
@@ -126,9 +126,8 @@ namespace lexiCONOMICON
 
             switch (LastAddedLayer()._layername)
             {
-                case "COMMENTLINE":
-                    break;
                 case "COMMENTBLOCK":
+                    return ProcessCommentBlock();
                     break;
                 case "DEPTHZERO":
                     
@@ -151,12 +150,13 @@ namespace lexiCONOMICON
                                 break;
                         }   
                     }
-                    if (CheckReaderIsAtEndOfStream()){if (HaveIReachedEndOfFileTwice()) { return EndOfFileToken();} }
+                    if (CheckReaderIsAtEndOfStream()){
+                        { return EndOfFileToken(); }
+                    }
                     break;
             }
 
             _currentLexeme = _currentCharacterRead.ToString();
-            //Unidentified Character Found.
             return new tokenObject(tokenType.ErrorToken, "UCF. " + _currentLexeme, _lastLocation);
         }
 
@@ -171,38 +171,143 @@ namespace lexiCONOMICON
             return true;
         }
 
+        private tokenObject ProcessCommentBlock()
+        {
+            var currentTokenType = tokenType.ErrorToken;
+            while (currentTokenType != tokenType.symbol_commentClose)
+            {
+                currentTokenType = _dictionary.identifySymbolAndPunctuation(
+                    _currentCharacterRead.ToString()
+                    + _nextCharacterRead.ToString())
+                    ;
+                AdvanceCursors();
+                if (CheckReaderIsAtEndOfStream() && currentTokenType != tokenType.symbol_commentClose) 
+                {
+                    throw new Exception("End of File Reached Before Even Closing The Comment Block");
+
+                }
+            }
+            PopLastLayer();
+            var returnToken = new tokenObject(currentTokenType, "*/", _lastLocation);
+            ClearContent();
+            return returnToken;
+        }
+
         private tokenObject ProcessSymbolsAndPunctuations()
         {
+            if(_currentCharacterRead == '_' &&  char.IsLetterOrDigit(_nextCharacterRead))
+            {
+                return ProcessWord();
+            }
+
             _currentLexeme = _currentCharacterRead.ToString();
-            tokenType probableTokenType;
-            /*
+            tokenType probableTokenType = tokenType.NaN;
+
             if (_dictionary.identifySymbolAndPunctuation(_currentLexeme) != tokenType.ErrorToken)
             {
                 probableTokenType = _dictionary.identifySymbolAndPunctuation(_currentLexeme);
+                switch(_currentLexeme)
+                {
+                    case "\'":
+                        return ProcessCharacter();
+                        break;
+                    case "\"":
+                        return ProcessString();
+                        break;
+                    case "#":
+                        if (char.IsDigit(_nextCharacterRead)) { return ProcessDate(); }
+                        if (char.IsLetter(_nextCharacterRead)) { return ProcessInclude(); }
+                        throw new Exception("WRONG USE OF THE HASH TAG AT: " + _lastLocation);
+                        break;
+                }
+
+                while(_dictionary.identifySymbolAndPunctuation(_currentLexeme + _nextCharacterRead) != tokenType.ErrorToken)
+                {
+                    AdvanceCursors();
+                    _currentLexeme += _currentCharacterRead.ToString();
+                   
+                    probableTokenType = _dictionary.identifySymbolAndPunctuation(_currentLexeme);
+                    if(probableTokenType == tokenType.symbol_COMMENTLINE)
+                    {
+                        while(_nextCharacterRead != '\n')
+                        {
+                            AdvanceCursors();
+                        }
+                        var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        ClearContent();
+                        return returnToken;
+                    }
+                    if(probableTokenType == tokenType.symbol_commentOpen)
+                    {
+                        AddLayer("COMMENTBLOCK");
+                        var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        ClearContent();
+                        return returnToken;
+                    }
+                }
             }
             else
             {
                 throw new Exception("This Symbol Does not Exist. " + _currentLexeme + " At: " + _lastLocation);
             }
-            var continueLooping = true;
-            while ((char.IsSymbol(_nextCharacterRead) || char.IsPunctuation(_nextCharacterRead)) && continueLooping)
-            {                
-                if (_dictionary.identifySymbolAndPunctuation(_currentLexeme + _nextCharacterRead) != tokenType.ErrorToken)
-                {
-                    AdvanceCursors();
-                    _currentLexeme += _currentCharacterRead;
-                    probableTokenType = _dictionary.identifySymbolAndPunctuation(_currentLexeme);
-                }
-                else
-                {
-                    continueLooping = false;
-                }
-
-            }
-            */
             var newToken = new tokenObject(probableTokenType, _currentLexeme,_lastLocation);
             ClearContent();
             return newToken;
+        }
+
+        private tokenObject ProcessDate()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private tokenObject ProcessInclude()
+        {
+            throw new NotImplementedException();
+        }
+
+        private tokenObject ProcessString()
+        {
+            _currentLexeme = _currentCharacterRead.ToString();
+
+            while (_nextCharacterRead != '"')
+            {
+                AdvanceCursors();
+                if(_currentCharacterRead == '\r' || _currentCharacterRead == '\n')
+                {
+
+                }
+                else
+                _currentLexeme += _currentCharacterRead.ToString();
+            }
+            AdvanceCursors();
+            _currentLexeme += _currentCharacterRead.ToString();
+
+
+            var newToken = new tokenObject(tokenType.literal_STRING, _currentLexeme, _lastLocation);
+            ClearContent();
+            return newToken;
+        }
+
+
+        private tokenObject ProcessCharacter()
+        {
+            _currentLexeme = _currentCharacterRead.ToString();
+            AdvanceCursors();
+            if(_currentCharacterRead == '\\')
+            {
+                _currentLexeme += _currentCharacterRead.ToString();
+                AdvanceCursors();
+            }
+            _currentLexeme += _currentCharacterRead.ToString();
+            AdvanceCursors();
+
+            if (_currentCharacterRead != '\''){throw new Exception("Character Too Long or Not Closed At: " + _lastLocation);}
+
+            _currentLexeme += _currentCharacterRead.ToString();
+            var returnToken = new tokenObject(tokenType.literal_CHARACTER, _currentLexeme, _lastLocation);
+            ClearContent();
+            return returnToken;
         }
 
         private tokenObject ProcessWord()
@@ -299,7 +404,11 @@ namespace lexiCONOMICON
                 }
                 else
                 {
-                    if (whatKindOfNumberIsIt != "OCTAL")
+                    if(whatKindOfNumberIsIt == "NUMBER" || whatKindOfNumberIsIt == "OCTAL")
+                    {
+                       
+                    }
+                    else if (whatKindOfNumberIsIt == "HEXADECIMAL" || whatKindOfNumberIsIt == "FLOAT" )
                     {
                         throw new Exception("WRONG NUMBER DEFINITION AT: " + _lastLocation);
                     }

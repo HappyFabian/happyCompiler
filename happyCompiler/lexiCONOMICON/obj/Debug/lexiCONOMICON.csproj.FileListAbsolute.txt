@@ -4,3 +4,9 @@ C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\bin\Deb
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\bin\Debug\lexiCONOMICON.pdb
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\obj\Debug\lexiCONOMICON.dll
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\obj\Debug\lexiCONOMICON.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\obj\Debug\lexiCONOMICON.csprojResolveAssemblyReference.cache
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\bin\Debug\lexiCONOMICON.dll.config
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\bin\Debug\lexiCONOMICON.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\bin\Debug\lexiCONOMICON.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\obj\Debug\lexiCONOMICON.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\lexiCONOMICON\obj\Debug\lexiCONOMICON.pdb

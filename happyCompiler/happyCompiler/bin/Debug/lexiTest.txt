@@ -1,4 +1,16 @@
-00 0x10 . int a;
-void defineWhat(){
-   a = 1 + 1; 
-} 
+struct Coordinates(int X, int y){
+	int _column = x;
+	int _row = y;
+	'a'
+	'\a'
+
+	"ADA
+RA"
+/*
+	string definedText = "TEXT";
+	void function WHYME(int a, bool b){
+//		_column += column;
+		_row +=row;
+	}
+
+}*/

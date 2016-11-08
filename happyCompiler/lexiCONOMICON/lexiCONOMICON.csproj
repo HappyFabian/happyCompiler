@@ -48,14 +48,12 @@
   <ItemGroup>
     <Compile Include="layerObject.cs" />
     <Compile Include="lexiDictionary.cs" />
-    <Compile Include="lexiEngine.cs" />
     <Compile Include="nlexiEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tokenType.cs" />
     <Compile Include="tokenContent.cs" />
     <Compile Include="tokenCoordinates.cs" />
     <Compile Include="tokenObject.cs" />
-    <Compile Include="tkanType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
