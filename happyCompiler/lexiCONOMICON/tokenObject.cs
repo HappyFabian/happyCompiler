@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace happyCompiler
+namespace lexiCONOMICON
 {
     public class tokenObject
     {
         public tokenType _type { get; set; }
         private tokenContent _content { get; set; }
-        private tokenCoordinates _coordinates { get; set; }
+        public tokenCoordinates _coordinates { get; set; }
 
         public tokenObject(tokenType type, string content, tokenCoordinates coordinates)
         {

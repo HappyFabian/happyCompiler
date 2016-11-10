@@ -1,0 +1,203 @@
+// parCifier Grammar
+
+
+Codigo -> IncludeList StatementList 
+
+IncludeList -> IncludeStatement IncludeList              IncludeStatement -> # include FILENAME
+
+StatementList-> Statement  StatementList
+              | Epsilon
+
+StatementList -> Statement StatementList
+               | Epsilon
+
+Statement->  CONST_Declaration EOS                     CONST_Declaration-> const vartype DECLARATION_variable
+	       | STRUCT_statement EOS 
+	       | ENUM_statement EOS 
+	       | dataType DECLARATION_Function EOS 
+	       | BasicStatement 
+
+
+ListBasicStatement -> BasicStatement ListBasicStatement 	        dataType -> type 
+		   | Epsilon						                        | struct 
+ 
+BasicStatement -> IF_statement 					                    type -> int             vartype -> var 
+		| SWITCH_statement				                             | float                          | type
+		| WHILE_statement				                            | bool
+		| DO_WHILE_statement EOS			                        | string
+ 		| FOR_statement                                             | date
+		| FOREACH_statement                                         | char
+		| STOPPING_statement    EOS                         STOPPING_statement -> break EOS
+		| vartype DECLARATION_variable	EOS 					  | continue EOS
+		| ASSIGNATION_statement EOS 					          | return RETURN_statement EOS
+		| EOS 							
+									           RETURN_statement -> expression 
+											                     | Epsilon
+SCOPE -> { ListBasicStatement }
+	| BasicStatement
+
+--------------------------------------------------------------------
+IF_statement -> if ( EXPRESSION ) SCOPE	ELSE_statement		
+ELSE_statement -> else SCOPE
+	       | Epsilon
+
+-------------------------------------------
+SWITCH_statement -> switch ( id ) switchSCOPE             
+
+switchSCOPE -> { ListCase DEFAULT }           DEFAULT -> default : CaseBody
+
+ListCase -> Case ListCase                     Case -> Expression : CaseBody 
+	  | Epsilon			                     CaseBody -> ListBasicStatement
+
+
+------------------------------------------------------------------------------------------
+
+WHILE_statement -> while (Expression) SCOPE                     DO_statement -> do SCOPE while (Expression)
+-----------------------------------------------------
+
+FOR_statement -> for (for_Expressions for_Expressions for_Expressions) SCOPE
+
+for_Expressions -> DECLARATION_variable EOS 
+		| Expression EOS
+		| ASIGNATION_statement EOS
+------------------------------------------------------------
+FOREACH_statement -> foreach(type id : id)  SCOPE
+
+-----------------------------------------------------------------------
+STRUCT_statement -> struct id STRUCT_SCOPE  
+              
+STRUCT_SCOPE -> {ListDeclarations}							  
+ListDeclarations -> Declarations ListDeclarations
+		  | Epsilon
+
+Declarations ->dataType DECLARATION_Function 
+	      | varType DECLARATION_variable
+	      | STRUCT_statement	
+
+--------------------------------------------------------------------------------
+ENUM_statement -> id { ListEnums }
+
+ListEnums -> Enum ListEnum'
+ListEnums'-> , Enum
+           | Epsilon
+
+Enum -> id enumeratorAssignation
+enumeratorAssignation -> = Expression
+		       | Epsilon
+------------------------------------------------
+DECLARATION_Function -> unaryList id(ListDeclaratioNVariable) SCOPE
+------------------------------------------------------------
+DECLARATION_Variable -> id_Expression DECLARATION_Variable' 
+DECLARATION_Variable' -> = Expression, 
+                      | Epsilon
+-------------------------------------
+ASSIGNATION_statement -> unaryList id accesor_list = Expression;
+
+-------------------------------------------------------
+Expression -> ternary_expression
+
+ternary_expression -> term_or ternary_expression'
+ternary_expression' -> ? term_or : term_or ternary_expression'
+                    | Epsilon
+
+term_or -> term_and term_or'
+term_or' -> || term_and term_or'
+          | Epsilon
+
+term_and  -> term_bit_or term_and'
+term_and' -> && term_bit_or term_and'
+           |  Epsilon
+
+term_bit_or  -> term_bit_xor  term_bit_or'
+term_bit_or' -> | term_bit_xor term_bit_or'
+              | Epsilon
+
+term_bit_xor  -> term_bit_and term_bit_xor'
+term_bit_xor' -> ^ term_bit_and term_bit_xor'
+               | Epsilon
+
+term_bit_and  -> term_equality term_bit_and'
+term_bit_and' -> & term_equality term_bit_and'
+               | Epsilon
+
+term_equality  -> term_relational term_equality'
+term_equality' -> == term_relational term_equality'
+                | != term_relational term_equality'
+                | Epsilon
+
+term_relational  -> term_shift term_relational'
+term_relational' -> < term_shift term_relational'
+                  | <= term_shift term_relational'
+                  | > term_shift term_relational'
+                  | >= term_shift term_relational'
+                  | Epsilon
+
+term_shift  -> aritmetica term_shift'
+term_shift' -> << aritmetica term_shift'
+             | >> aritmetica term_shift'
+             | Epsilon
+
+aritmetica  -> term aritmetica'
+aritmetica' -> + term aritmetica'
+             | - term aritmetica'
+             | Epsilon
+
+term  -> factor term'
+term' -> * factor term'
+       | / factor term'
+       | % factor term'
+       | Epsilon
+
+factor -> id_expression                        
+        | literals			                   
+        | (expresion)                                           
+
+literals -> lit_NUMBER
+        | lit_STRING
+        | lit_CHAR
+        | lit_BOOL
+        | lit_FLOAT
+        | lit_OCTAL
+        | lit_HEXADECIMAL
+        | lit_DATE
+
+
+ListParameter -> Expression ListParameter'
+ListParameter' -> , Expression ListParameter'
+
+id_expression -> unaryList id accesor_list id_expression'
+id_expression' -> (ListParameters)
+                | Epsilon
+
+unaryList -> unary unaryList
+           | Epsilon
+
+
+----------------------------------------
+unary -> *
+       | &
+       | !
+       | ~
+       | -
+       | +
+       | ++
+       | --
+       | Epsilon
+
+accesor_list-> -> id accesor_list
+          | .id accesor_list
+          | [expression]  accesor_list
+          | Epsilon
+
+
+asign_operator -> =
+                | +=
+                | -=
+                | *=
+                | /=
+                | %=
+                | >>=
+                | <<=
+                | &=
+                | ^=
+                | |=

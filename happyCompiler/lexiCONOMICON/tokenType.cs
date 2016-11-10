@@ -1,4 +1,4 @@
-﻿namespace happyCompiler
+﻿namespace lexiCONOMICON
 {
     public enum tokenType
     {
@@ -7,14 +7,19 @@
         //This token should not APPEAR.
         ErrorToken,
         //Literals
-        literal_ID,
+        ID,
         literal_NUMBER,
-        //System Flags Tokens
-        system_EndOfFile,
         literal_FLOAT,
         literal_OCTAL,
         literal_HEXADECIMAL,
-        //Aritmetic Operators
+        literal_CHARACTER,
+        literal_STRING,
+        literal_FILENAME,
+        literal_DATE,
+        literal_BOOL,
+        //System Flags Tokens
+        system_EndOfFile,
+        // Operators
         oper_ADDITION,
         oper_INCREASE,
         oper_SUBSTRACTION,
@@ -37,6 +42,7 @@
         bitoper_XOR,
         bitoper_LEFTSHIFT,
         bitoper_RIGHTSHIFT,
+
         //Class Words
         resword_INT,
         resword_FLOAT,
@@ -46,6 +52,7 @@
         resword_ENUM,
         resword_STRUCT,
         resword_VAR,
+        resword_STRING,
         //Reserved Words
         resword_IF,
         resword_ELSE,
@@ -60,8 +67,10 @@
         resword_FUNCTION,
         resword_INCLUDE,
         resword_VOID,
+        resword_CONST,
         //Symbols
         symbol_Accessor,
+        symbol_doublePoints,
         symbol_EndOfStatement,
         symbol_Assignator,
         symbol_openParenthesis,
@@ -79,9 +88,6 @@
         symbol_commentClose,
         symbol_COMMENTLINE,
         symbol_HASHTAG,
-        literal_CHARACTER,
-        literal_STRING,
-        literal_FILENAME,
-        literal_DATE
+        
     }
 }

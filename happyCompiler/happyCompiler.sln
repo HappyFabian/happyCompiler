@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "happyCompiler", "happyCompiler\happyCompiler.csproj", "{D7A11FBE-0A13-408C-8CB8-F06B6849B69D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lexiCONOMICON", "lexiCONOMICON\lexiCONOMICON.csproj", "{175FAD0A-4360-405C-8C40-28C7667DEBA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parSEER", "parSEER\parSEER.csproj", "{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

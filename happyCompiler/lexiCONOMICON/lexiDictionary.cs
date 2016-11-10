@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace happyCompiler
+namespace lexiCONOMICON
 {
     public class lexiDictionary
     {
@@ -78,7 +78,7 @@ namespace happyCompiler
             _reservedWords.Add("float", tokenType.resword_FLOAT);
             _reservedWords.Add("bool", tokenType.resword_BOOL);
             _reservedWords.Add("char", tokenType.resword_CHAR);
-            _reservedWords.Add("string", tokenType.resword_DATE);
+            _reservedWords.Add("string", tokenType.resword_STRING);
             _reservedWords.Add("date", tokenType.resword_DATE);
             _reservedWords.Add("enum", tokenType.resword_ENUM);
             _reservedWords.Add("struct", tokenType.resword_STRUCT);
@@ -96,7 +96,9 @@ namespace happyCompiler
             _reservedWords.Add("continue", tokenType.resword_CONTINUE);
             _reservedWords.Add("function", tokenType.resword_FUNCTION);
             _reservedWords.Add("include",tokenType.resword_INCLUDE);
-
+            _reservedWords.Add("const", tokenType.resword_CONST);
+            _reservedWords.Add("true", tokenType.literal_BOOL);
+            _reservedWords.Add("false", tokenType.literal_BOOL);
         }
 
 
@@ -105,6 +107,8 @@ namespace happyCompiler
         {
             _symbols = new Dictionary<string, tokenType>();
             //7
+            _symbols.Add("->", tokenType.symbol_Accessor);
+            _symbols.Add(":", tokenType.symbol_doublePoints);
             _symbols.Add("#", tokenType.symbol_HASHTAG);
             _symbols.Add("//", tokenType.symbol_COMMENTLINE);     
             _symbols.Add("/*", tokenType.symbol_commentOpen);
@@ -133,7 +137,7 @@ namespace happyCompiler
 
         public tokenType identifyString(string input)
         {
-            tokenType result = tokenType.literal_ID;
+            tokenType result = tokenType.ID;
             if (_reservedWords.ContainsKey(input)) { result = _reservedWords[input]; }
             return result;
         }

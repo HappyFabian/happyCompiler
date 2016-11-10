@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using happyCompiler;
+
 
 namespace lexiCONOMICON
 {
@@ -22,7 +22,7 @@ namespace lexiCONOMICON
         private tokenCoordinates _lastLocation;
 
         private List<layerObject> _layerStack;
-        private List<tokenObject> _generatedTokens;
+        public List<tokenObject> _generatedTokens;
 
         private string _currentLexeme;
         private char _lastCharacterRead;
@@ -188,7 +188,9 @@ namespace lexiCONOMICON
                 }
             }
             PopLastLayer();
-            var returnToken = new tokenObject(currentTokenType, "*/", _lastLocation);
+
+            //var returnToken = new tokenObject(currentTokenType, "*/", _lastLocation);
+            var returnToken = GenerateToken();
             ClearContent();
             return returnToken;
         }
@@ -234,14 +236,16 @@ namespace lexiCONOMICON
                         {
                             AdvanceCursors();
                         }
-                        var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        ////var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        var returnToken = GenerateToken();
                         ClearContent();
                         return returnToken;
                     }
                     if(probableTokenType == tokenType.symbol_commentOpen)
                     {
                         AddLayer("COMMENTBLOCK");
-                        var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        // var returnToken = new tokenObject(probableTokenType, _currentLexeme, _lastLocation);
+                        var returnToken = GenerateToken();
                         ClearContent();
                         return returnToken;
                     }

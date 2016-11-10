@@ -1,0 +1,7 @@
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.csprojResolveAssemblyReference.cache
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\parSEER.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\parSEER.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\lexiCONOMICON.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\lexiCONOMICON.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.pdb

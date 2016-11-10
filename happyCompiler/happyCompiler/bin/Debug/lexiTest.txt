@@ -1,19 +1,5 @@
-#include <WHATEVER>
+# include <stdio.h>
 
-struct Coordinates(int X, int y){
-	int _column = x;
-	int _row = y;
-	'a'
-	'\a'
-	
-	#11-11-1234#
-	"ADA
-RA"
-/*
-	string definedText = "TEXT";
-	void function WHYME(int a, bool b){
-//		_column += column;
-		_row +=row;
-	}
-
-}*/
+/*const int value;
+function int main() {} 
+*/

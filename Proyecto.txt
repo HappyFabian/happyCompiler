@@ -13,11 +13,11 @@ Tipos
  -const
 
 Sentencias
- -if
- -while
+ -if (Expression)
+ -while (Expression)
  -do
  -for
- -switch
+ -switch (ID)
  -foreach (se vera como el foreach de java)
  -invocar funciones
  -asignaciones

@@ -21,3 +21,5 @@ C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Deb
 C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\happyCompiler.pdb
 C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\lexiCONOMICON.dll
 C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\lexiCONOMICON.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\parSEER.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\happyCompiler\bin\Debug\parSEER.pdb
