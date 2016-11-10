@@ -11,10 +11,10 @@ StatementList-> Statement  StatementList
 StatementList -> Statement StatementList
                | Epsilon
 
-Statement->  CONST_Declaration EOS                     CONST_Declaration-> const vartype DECLARATION_variable
-	       | STRUCT_statement EOS 
+Statement->  CONST_Declaration EOS                CONST_Declaration-> const vartype DECLARATION_variable
+	       | STRUCT_statement 
 	       | ENUM_statement EOS 
-	       | dataType DECLARATION_Function EOS 
+	       | dataType DECLARATION_Function 
 	       | BasicStatement 
 
 
@@ -70,7 +70,7 @@ STRUCT_SCOPE -> {ListDeclarations}
 ListDeclarations -> Declarations ListDeclarations
 		  | Epsilon
 
-Declarations ->dataType DECLARATION_Function EOS
+Declarations ->dataType DECLARATION_Function
 	      | varType DECLARATION_variable EOS
 	      | STRUCT_statement	
 
@@ -103,7 +103,6 @@ ASSIGNATION_statement -> unaryList id accesor_list = Expression;
 Expression -> term_or
 //|ternary_expression
 
-/*
 ternary_expression -> term_or ternary_expression'
 ternary_expression' -> ? term_or : term_or ternary_expression'
                     | Epsilon
@@ -182,11 +181,15 @@ id_expression -> id_Simple id_expression'
 id_expression' -> (ListParameters)
                 | Epsilon
 
+accesor_list-> -> id accesor_list
+          | .id accesor_list
+          | [expression]  accesor_list
+          | Epsilon
+
+
 unaryList -> unary unaryList
            | Epsilon
 
-
-----------------------------------------
 unary -> *
    | &
    | !
@@ -199,10 +202,6 @@ unary -> *
 
 
 
-accesor_list-> -> id accesor_list
-          | .id accesor_list
-          | [expression]  accesor_list
-          | Epsilon
 
 
 asign_operator -> =

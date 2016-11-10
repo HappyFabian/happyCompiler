@@ -94,6 +94,7 @@ namespace lexiCONOMICON
             _reservedWords.Add("foreach", tokenType.resword_FOREACH);
             _reservedWords.Add("break", tokenType.resword_BREAK);
             _reservedWords.Add("continue", tokenType.resword_CONTINUE);
+            _reservedWords.Add("return", tokenType.resword_RETURN);
             _reservedWords.Add("function", tokenType.resword_FUNCTION);
             _reservedWords.Add("include",tokenType.resword_INCLUDE);
             _reservedWords.Add("const", tokenType.resword_CONST);
@@ -114,7 +115,17 @@ namespace lexiCONOMICON
             _symbols.Add("/*", tokenType.symbol_commentOpen);
             _symbols.Add("*/", tokenType.symbol_commentClose);
             _symbols.Add(",", tokenType.symbol_SEPARATOR);
-            _symbols.Add("=", tokenType.symbol_Assignator);  
+            _symbols.Add("=", tokenType.symbol_Assignator);
+            _symbols.Add("+=", tokenType.symbol_operAssignator);
+            _symbols.Add("-=", tokenType.symbol_operAssignator);
+            _symbols.Add("*=", tokenType.symbol_operAssignator);
+            _symbols.Add("/=", tokenType.symbol_operAssignator);
+            _symbols.Add("%=", tokenType.symbol_operAssignator);
+            _symbols.Add(">>=", tokenType.symbol_operAssignator);
+            _symbols.Add("<<=", tokenType.symbol_operAssignator);
+            _symbols.Add("&=", tokenType.symbol_operAssignator);
+            _symbols.Add("^=", tokenType.symbol_operAssignator);
+            _symbols.Add("|=", tokenType.symbol_operAssignator);
             _symbols.Add(".", tokenType.symbol_Accessor);
             _symbols.Add(";", tokenType.symbol_EndOfStatement);
              _symbols.Add("(", tokenType.symbol_openParenthesis);

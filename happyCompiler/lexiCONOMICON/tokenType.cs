@@ -73,6 +73,7 @@
         symbol_doublePoints,
         symbol_EndOfStatement,
         symbol_Assignator,
+        symbol_operAssignator,
         symbol_openParenthesis,
         symbol_closeParenthesis,
         symbol_openCurlyBraces,
@@ -88,6 +89,7 @@
         symbol_commentClose,
         symbol_COMMENTLINE,
         symbol_HASHTAG,
-        
+
+        resword_RETURN
     }
 }
