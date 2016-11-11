@@ -90,6 +90,7 @@
         symbol_COMMENTLINE,
         symbol_HASHTAG,
 
-        resword_RETURN
+        resword_RETURN,
+        resword_DEFAULT
     }
 }

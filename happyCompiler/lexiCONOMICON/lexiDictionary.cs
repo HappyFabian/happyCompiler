@@ -91,6 +91,8 @@ namespace lexiCONOMICON
             _reservedWords.Add("do", tokenType.resword_DO);
             _reservedWords.Add("switch", tokenType.resword_SWITCH);
             _reservedWords.Add("case", tokenType.resword_CASE);
+
+            _reservedWords.Add("default", tokenType.resword_DEFAULT);
             _reservedWords.Add("foreach", tokenType.resword_FOREACH);
             _reservedWords.Add("break", tokenType.resword_BREAK);
             _reservedWords.Add("continue", tokenType.resword_CONTINUE);

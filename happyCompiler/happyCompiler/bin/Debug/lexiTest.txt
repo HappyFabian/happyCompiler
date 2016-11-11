@@ -4,4 +4,19 @@ const int value, a = HI(10,1), b = 10;
 
 struct alpha{ int b = 2;}
 
-int * what(int b, int c = 2){}
+int * what(int b, int c = 2){ return;}
+
+if(1 == 2){;}else{if(2==3){;}}
+
+enum why{ a, b,c }
+
+switch(a){
+	case 1 : { while(a == 0){ a = 1;}}
+	case 2 : { do{a = 1;}while(a == 0);}
+	default: {int b = 3;}
+	}
+
+foreach(string alpha: LIST)
+{
+	int HELP = a;
+}

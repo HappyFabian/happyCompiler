@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,7 +88,6 @@ namespace parSEER
             }
             return false;
         }
-
         bool checkVAR()
         {
             if (currentTokenType() == tokenType.resword_VAR)
@@ -97,7 +97,6 @@ namespace parSEER
             return false;
 
         }
-
         bool checkSTRUCT()
         {
             if (currentTokenType() == tokenType.resword_STRUCT)
@@ -107,7 +106,6 @@ namespace parSEER
             return false;
 
         }
-
         bool checkALLtypes()
         {
             if (checkStandardTypes() || checkVAR() || checkSTRUCT())
@@ -117,16 +115,6 @@ namespace parSEER
             return false;
 
         }
-
-        bool checkStandardAndStruct()
-        {
-            if (checkStandardTypes() || checkSTRUCT())
-            {
-                return true;
-            }
-            return false;
-        }
-
         bool checkStandardAndVar()
         {
             if (checkStandardTypes() || checkVAR())
@@ -135,7 +123,6 @@ namespace parSEER
             }
             return false;
         }
-
         bool isUnaryToken()
         {
             if (currentTokenType() == tokenType.oper_MULTIPLICATION
@@ -171,19 +158,15 @@ namespace parSEER
             Statement();
             StatementList();
         }
-
         private void Statement()
         {
             if (currentTokenType() == tokenType.resword_CONST)
             {
-                Console.Write("CONSTANT  ");
                 CONSTANT_DECLARATION();
                 EOS();
-                Console.WriteLine("EOS");
             }
             else if (currentTokenType() == tokenType.resword_STRUCT)
             {
-                Console.Write("STRUCT  ");
                 STRUCT_DECLARATION();
             }
             else if (currentTokenType() == tokenType.resword_ENUM)
@@ -192,7 +175,6 @@ namespace parSEER
             }
             else if (checkALLtypes())
             {
-                Console.Write("DECLARATION ");
                 if (checkALLtypes())
                 {
                     advanceToken();
@@ -215,35 +197,37 @@ namespace parSEER
                     EOS();
                 }
                 EOS();
-
-                Console.WriteLine("EOS");
+               
             }
             else if (currentTokenType() == tokenType.resword_IF)
             {
+                IF_statement(); 
             }
             else if (currentTokenType() == tokenType.resword_SWITCH)
             {
+                SWITCH_statement();
             }
             else if (currentTokenType() == tokenType.resword_WHILE)
             {
+                WHILE_statement();
             }
             else if (currentTokenType() == tokenType.resword_DO)
             {
+                DO_WHILE_statement();
+                EOS();
             }
             else if (currentTokenType() == tokenType.resword_FOR)
             {
+                FOR_statement();
             }
             else if (currentTokenType() == tokenType.resword_FOREACH)
             {
+                FOREACH_STATEMENT();
             }
-            else if (currentTokenType() == tokenType.resword_SWITCH)
+            else if (currentTokenType() == tokenType.ID || isUnaryToken() )
             {
-            }
-            else if (isUnaryToken())
-            {
-            }
-            else if (currentTokenType() == tokenType.ID)
-            {
+                ASSIGNATION_statement();
+                EOS();
             }
             else if (currentTokenType() == tokenType.symbol_EndOfStatement)
             {
@@ -252,11 +236,240 @@ namespace parSEER
 
         }
 
-        private void ENUM_DECLARATION()
+        private void FOREACH_STATEMENT()
         {
-            throw new NotImplementedException();
+            if (currentTokenType() != tokenType.resword_FOREACH){return;}
+            advanceToken();
+            if (currentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            if(!checkALLtypes()){ throwException();}
+            advanceToken();
+            ID_Simple();
+            if (currentTokenType() != tokenType.symbol_doublePoints) { throwException();}
+            advanceToken();
+            ID_Simple();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            SCOPE();
+        }
+        private void FOR_statement()
+        {
+            if (currentTokenType() != tokenType.resword_FOR) {return; }
+            advanceToken();
+            if (currentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            FOR_EXPRESSION();
+            FOR_EXPRESSION();
+            FOR_EXPRESSION();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            SCOPE();
+        }
+        private void FOR_EXPRESSION()
+        {
+            if (checkStandardAndVar()) { advanceToken(); DECLARATION_variable(); EOS();}
+            else if (currentTokenType() == tokenType.ID || isUnaryToken())
+            {
+                ASSIGNATION_statement();
+                EOS();
+            }
+            else
+            {
+                EXPRESSION(); EOS();
+            }
+        }
+        private void DO_WHILE_statement()
+        {
+            if (currentTokenType() != tokenType.resword_DO) { return; }
+            advanceToken();
+            SCOPE();
+            if (currentTokenType() != tokenType.resword_WHILE) { return; }
+            advanceToken();
+
+            if (currentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            EXPRESSION();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+        }
+        private void WHILE_statement()
+        {
+            if (currentTokenType() != tokenType.resword_WHILE){ return;}
+            advanceToken();
+            if (currentTokenType() != tokenType.symbol_openParenthesis){ throwException();}
+            advanceToken();
+            EXPRESSION();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis) { throwException();}
+            advanceToken();
+            SCOPE();
+        }
+        private void ASSIGNATION_statement()
+        {
+            ID_Simple();
+            if (currentTokenType() != tokenType.symbol_Assignator &&
+                currentTokenType() != tokenType.symbol_operAssignator)
+            {
+                throwException();
+            }
+            advanceToken();
+            EXPRESSION();
+
+        }
+        private void SWITCH_statement()
+        {
+            if(currentTokenType() != tokenType.resword_SWITCH) { return;}
+            advanceToken();
+            if (currentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            ID_Simple();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                throwException();
+            }
+           
+            advanceToken();
+
+            SWITCH_SCOPE();
+        }
+        private void SWITCH_SCOPE()
+        {
+            if(currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException();}
+            advanceToken();
+            LISTCASE();
+            DEFAULTCASE();
+            if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException();}
+            advanceToken();
+
+
+        }
+        private void DEFAULTCASE()
+        {
+            if(currentTokenType() != tokenType.resword_DEFAULT) { return;}
+                advanceToken();
+            if (currentTokenType() != tokenType.symbol_doublePoints) { throwException(); }
+                advanceToken();
+            if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException(); }
+            advanceToken();
+            ListBasicStatements();
+            if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException(); }
+            advanceToken();
+
+        }
+        private void LISTCASE()
+        {
+             CASE();
+        }
+        private void CASE()
+        {
+            if(currentTokenType() != tokenType.resword_CASE) { return;}
+            advanceToken();
+            EXPRESSION();
+            if(currentTokenType() != tokenType.symbol_doublePoints) { throwException();}
+            advanceToken();
+
+            if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException(); }
+            advanceToken();
+            ListBasicStatements();
+
+            if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException(); }
+            advanceToken();
+
+
+            LISTCASE();
         }
 
+
+        private void IF_statement()
+        {
+            if (currentTokenType() != tokenType.resword_IF)
+            {
+                return;
+            }
+            advanceToken();
+            if (currentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            EXPRESSION();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                throwException();
+            }
+            advanceToken();
+            SCOPE();
+            ELSE_statement();
+        }
+        private void ELSE_statement()
+        {
+            if (currentTokenType() != tokenType.resword_ELSE)
+            {
+                return;
+            }
+            advanceToken();
+            SCOPE();
+        }
+        private void ENUM_DECLARATION()
+        {
+            if (currentTokenType() != tokenType.resword_ENUM) return;
+
+            advanceToken();
+            if (currentTokenType() != tokenType.ID)
+            {
+                throwException();
+            }
+            advanceToken();
+
+            if (currentTokenType() != tokenType.symbol_openCurlyBraces)
+            {
+                throwException();
+            }
+            advanceToken();
+            ListEnums();
+
+            if (currentTokenType() != tokenType.symbol_closeCurlyBraces)
+            {
+                throwException();
+            }
+            advanceToken();
+        }
+        private void ListEnums()
+        {
+            if (currentTokenType() != tokenType.ID) return;
+            advanceToken();
+            if (currentTokenType() == tokenType.symbol_Assignator)
+            {
+                advanceToken();
+                EXPRESSION();
+            }
+            if (currentTokenType() == tokenType.symbol_SEPARATOR)
+            {
+                advanceToken();
+                ListEnums();
+            }
+
+        }
         private void SCOPE()
         {
             if (currentTokenType() == tokenType.symbol_openCurlyBraces)
@@ -275,45 +488,57 @@ namespace parSEER
                 BasicStatement();
             }
         }
-
         private void BasicStatement()
         {
             if (checkStandardAndVar())
             {
-                Console.Write("DECLARATION VARIABLE");
                     advanceToken();
-                    ID_Simple();
-                    accesorList();
-                    DECLARATION_variableP();
+                    DECLARATION_variable();
                     EOS();
-                Console.WriteLine("EOS");
             }
             else if (currentTokenType() == tokenType.resword_IF)
             {
+                IF_statement();
             }
             else if (currentTokenType() == tokenType.resword_SWITCH)
             {
+                SWITCH_statement();
             }
             else if (currentTokenType() == tokenType.resword_WHILE)
             {
+                WHILE_statement();
             }
             else if (currentTokenType() == tokenType.resword_DO)
             {
+                DO_WHILE_statement();
+                EOS();
             }
             else if (currentTokenType() == tokenType.resword_FOR)
             {
+                FOR_statement();
             }
             else if (currentTokenType() == tokenType.resword_FOREACH)
             {
+                FOREACH_STATEMENT();
             }
-            else if (currentTokenType() == tokenType.resword_SWITCH)
+            else if (isUnaryToken() || currentTokenType() == tokenType.ID)
             {
+                ASSIGNATION_statement();
+                EOS();
             }
-            else if (isUnaryToken())
+            else if (currentTokenType() == tokenType.resword_RETURN)
             {
+                RETURN_statement();
+                EOS();
             }
-            else if (currentTokenType() == tokenType.ID)
+            else if (currentTokenType() == tokenType.resword_CONTINUE)
             {
+                CONTINUE_statement();
+                EOS();
+            }
+            else if (currentTokenType() == tokenType.resword_BREAK)
+            {
+                BREAK_statement(); EOS();
             }
             else if (currentTokenType() == tokenType.symbol_EndOfStatement)
             {
@@ -321,6 +546,33 @@ namespace parSEER
             }
         }
 
+        private void RETURN_statement()
+        {
+            if (currentTokenType() != tokenType.resword_RETURN){ return;}
+            advanceToken();
+
+            if (currentTokenType() != tokenType.symbol_EndOfStatement)
+            {
+                EXPRESSION();
+            }
+        }
+
+        private void BREAK_statement()
+        {
+            if (currentTokenType() != tokenType.resword_BREAK)
+            {
+                return;
+            }
+            advanceToken();
+        }
+        private void CONTINUE_statement()
+        {
+            if (currentTokenType() != tokenType.resword_CONTINUE)
+            {
+                return;
+            }
+            advanceToken();
+        }
         private void ListBasicStatements()
         {
                 if (!checkStandardAndVar()
@@ -340,8 +592,6 @@ namespace parSEER
                 BasicStatement();
                 ListBasicStatements();
         }
-
-
         private void ListParameterTypes()
         {
             if (!checkALLtypes()) return;
@@ -355,7 +605,6 @@ namespace parSEER
             }
             ListParametersTypesP();
         }
-
         private void ListParametersTypesP()
         {
             if (currentTokenType() != tokenType.symbol_SEPARATOR) { return; }
@@ -371,7 +620,6 @@ namespace parSEER
             ID();
             STRUCT_SCOPE();
         }
-
         private void STRUCT_SCOPE()
         {
             if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException();}
@@ -391,7 +639,6 @@ namespace parSEER
             }
 
         }
-
         private void Declaration()
         {
             if (checkALLtypes())
@@ -419,7 +666,6 @@ namespace parSEER
                 STRUCT_DECLARATION();
             }
         }
-
         private void CONSTANT_DECLARATION()
         {
 
@@ -433,13 +679,11 @@ namespace parSEER
 
 
         }
-
         private void DECLARATION_variable()
         {
             ID_Simple();
             DECLARATION_variableP();
         }
-
         private void DECLARATION_variableP()
         {
 
@@ -457,7 +701,6 @@ namespace parSEER
             }
 
         }
-
         private void SEPARATOR()
         {
             if (currentTokenType() == tokenType.symbol_SEPARATOR)
@@ -465,7 +708,6 @@ namespace parSEER
                 advanceToken();
             }
         }
-
         private void EQUAL()
         {
             if (currentTokenType() == tokenType.symbol_Assignator)
@@ -473,7 +715,6 @@ namespace parSEER
                 advanceToken();
             }
         }
-
         private void ID()
         {
             if (currentTokenType() == tokenType.ID)
@@ -481,14 +722,12 @@ namespace parSEER
                 advanceToken();
             }
         }
-
         private void ID_Simple()
         {
             unaryList();
             ID();
             accesorList();
         }
-
         private void accesorList()
         {
 
@@ -519,7 +758,6 @@ namespace parSEER
             }
             return false;
         }
-
         private void unaryList()
         {
             var result = unary();
@@ -537,7 +775,6 @@ namespace parSEER
             }
             return false;
         }
-
         private void EOS()
         {
             if (currentTokenType() == tokenType.symbol_EndOfStatement)
@@ -550,7 +787,6 @@ namespace parSEER
         {
             TERM_OR();
         }
-
         private void TERM_OR()
         {
             TERM_AND();
