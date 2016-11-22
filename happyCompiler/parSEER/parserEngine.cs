@@ -48,18 +48,10 @@ namespace parSEER
 
         private void Code()
         {
-            IncludeList();
             StatementList();
         }
 
-        private void IncludeList()
-        {
-            if (_currentToken._type == tokenType.symbol_HASHTAG)
-            {
-                IncludeStatement();
-                IncludeList();
-            }
-        }
+
 
         private void IncludeStatement()
         {
@@ -153,6 +145,8 @@ namespace parSEER
                 && currentTokenType() != tokenType.resword_FOREACH
                 && currentTokenType() != tokenType.resword_SWITCH
                 && !isUnaryToken()
+                && currentTokenType() != tokenType.symbol_HASHTAG
+                && currentTokenType() != tokenType.HTML_TOKEN
                 && currentTokenType() != tokenType.ID
                 && currentTokenType() != tokenType.symbol_EndOfStatement) return;
             Statement();
@@ -164,6 +158,14 @@ namespace parSEER
             {
                 CONSTANT_DECLARATION();
                 EOS();
+            }
+            if (_currentToken._type == tokenType.HTML_TOKEN)
+            {
+              advanceToken();
+            }
+            if (_currentToken._type == tokenType.symbol_HASHTAG)
+            {
+                IncludeStatement();
             }
             else if (currentTokenType() == tokenType.resword_STRUCT)
             {
@@ -226,7 +228,21 @@ namespace parSEER
             }
             else if (currentTokenType() == tokenType.ID || isUnaryToken() )
             {
-                ASSIGNATION_statement();
+                try
+                {
+                    ASSIGNATION_statement();
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        ID_EXPRESSIONP();
+                    }
+                    catch (Exception)
+                    {
+                        throwException();
+                    }
+                }
                 EOS();
             }
             else if (currentTokenType() == tokenType.symbol_EndOfStatement)
@@ -496,6 +512,10 @@ namespace parSEER
                     DECLARATION_variable();
                     EOS();
             }
+            else if (_currentToken._type == tokenType.HTML_TOKEN)
+            {
+                advanceToken();
+            }
             else if (currentTokenType() == tokenType.resword_IF)
             {
                 IF_statement();
@@ -523,7 +543,21 @@ namespace parSEER
             }
             else if (isUnaryToken() || currentTokenType() == tokenType.ID)
             {
-                ASSIGNATION_statement();
+                try
+                {
+                    ASSIGNATION_statement();
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        ID_EXPRESSIONP();
+                    }
+                    catch (Exception)
+                    {
+                        throwException();
+                    }
+                }
                 EOS();
             }
             else if (currentTokenType() == tokenType.resword_RETURN)

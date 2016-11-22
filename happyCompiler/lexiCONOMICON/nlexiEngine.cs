@@ -119,6 +119,7 @@ namespace lexiCONOMICON
             return returnValue;
         }
 
+        private bool isParsingHTML = true;
         public tokenObject GenerateToken()
         {
             AdvanceReaderCursor();
@@ -133,25 +134,65 @@ namespace lexiCONOMICON
                     
                     goto default;
                 default:
-                    if(ConsumeWhitespaces()) {ClearContent();}
-                    if (IsCharacterRecognizable(_currentCharacterRead))
+                    if (isParsingHTML)
                     {
-                        CurrentTokenBeginning();
-                        switch (IdentifyCharacter(_currentCharacterRead))
+                        while (isParsingHTML)
                         {
-                            case "LETTER":
-                                return ProcessWord(); break;
-                            case "DIGIT":
-                                return ProcessNumber();
-                                break;
-                            case "PUNCTUATION": 
-                            case "SYMBOL":
-                                return ProcessSymbolsAndPunctuations();
-                                break;
-                        }   
+                            if (CheckReaderIsAtEndOfStream() && _currentLexeme == "")
+                            {
+                                { return EndOfFileToken(); }
+                            }
+                            else if(CheckReaderIsAtEndOfStream() && _currentLexeme != "")
+                            {
+
+                                _currentLexeme += _currentCharacterRead;
+                                var returnToken = new tokenObject(tokenType.HTML_TOKEN, _currentLexeme, _lastLocation);
+                                ClearContent();
+                                return returnToken;
+                            }
+
+                            if (_currentCharacterRead == '<' && _nextCharacterRead == '%')
+                            {
+                                AdvanceCursors();
+                                isParsingHTML = false;
+                                if (string.IsNullOrEmpty(_currentLexeme))
+                                {
+                                    return GenerateToken();
+                                }
+                                var returnToken = new tokenObject(tokenType.HTML_TOKEN,_currentLexeme,_lastLocation);
+                                ClearContent();
+                                return returnToken;
+                            }
+                            else
+                            {
+                                
+                            _currentLexeme += _currentCharacterRead;
+                            AdvanceCursors();
+
+                            }
+                        }
+
+                       
                     }
-                    if (CheckReaderIsAtEndOfStream()){
-                        { return EndOfFileToken(); }
+                    else
+                    {                
+                        if(ConsumeWhitespaces()) {ClearContent();}
+                        if (IsCharacterRecognizable(_currentCharacterRead))
+                        {
+                            CurrentTokenBeginning();
+                            switch (IdentifyCharacter(_currentCharacterRead))
+                            {
+                                case "LETTER":
+                                    return ProcessWord(); break;
+                                case "DIGIT":
+                                    return ProcessNumber();
+                                    break;
+                                case "PUNCTUATION": 
+                                case "SYMBOL":
+                                    return ProcessSymbolsAndPunctuations();
+                                    break;
+                            }   
+                        }
                     }
                     break;
             }
@@ -210,6 +251,15 @@ namespace lexiCONOMICON
                 probableTokenType = _dictionary.identifySymbolAndPunctuation(_currentLexeme);
                 switch(_currentLexeme)
                 {
+                    case "%":
+                        if (_nextCharacterRead == '>')
+                        {
+                            AdvanceCursors();
+                            ClearContent();
+                            isParsingHTML = true;
+                            return GenerateToken();
+                        }
+                        break;
                     case "<":
                         if (char.IsLetter(_nextCharacterRead)) { return ProcessFileName(); }
                         break;

@@ -91,6 +91,7 @@
         symbol_HASHTAG,
 
         resword_RETURN,
-        resword_DEFAULT
+        resword_DEFAULT,
+        HTML_TOKEN
     }
 }
