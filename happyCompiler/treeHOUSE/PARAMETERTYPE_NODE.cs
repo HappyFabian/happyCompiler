@@ -7,10 +7,10 @@ using lexiCONOMICON;
 
 namespace treeHOUSE
 {
-    public class DECLARATION_STATEMENT : baseSTATEMENT
+    public class PARAMETERTYPE_NODE : baseNODE
     {
-        public bool isFirstConstant = false;
         public tokenObject type;
-        public List<PARAMETERTYPE_NODE> variableList = new List<PARAMETERTYPE_NODE>();
+        public idEXPRESSION_NODE idExpressionNode;
+        public EXPRESSION_NODE value;
     }
 }

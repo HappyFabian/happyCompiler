@@ -31,6 +31,7 @@ namespace parSEER
             {
                 throw new Exception("INVALID TOKEN AT: " + _currentToken._coordinates);
             }
+            Console.WriteLine("Code Parsing Finished.");
         }
 
         private void throwException()
@@ -49,25 +50,6 @@ namespace parSEER
             return _currentToken._type;
         }
 
-        private List<baseSTATEMENT> Code()
-        {
-            var statementList = new List<baseSTATEMENT>();
-            StatementList(statementList);
-            return statementList;
-        }
-        private void IncludeStatement()
-        {
-            advanceToken();
-            if (currentTokenType() == tokenType.resword_INCLUDE)
-            {
-                advanceToken();
-            }
-            if (currentTokenType() == tokenType.literal_FILENAME || currentTokenType() == tokenType.literal_STRING)
-            {
-                advanceToken();
-            }
-
-        }
         bool checkStandardTypes()
         {
             if (currentTokenType() == tokenType.resword_INT
@@ -132,6 +114,35 @@ namespace parSEER
             return false;
         }
 
+        private List<baseSTATEMENT> Code()
+        {
+            var statementList = new List<baseSTATEMENT>();
+            StatementList(statementList);
+            return statementList;
+        }
+        private baseSTATEMENT IncludeStatement()
+        {
+            var returnStatement = new INCLUDE_STATEMENT();
+            advanceToken();
+            if (currentTokenType() != tokenType.resword_INCLUDE)
+            {
+                throwException();
+                return null;
+            }
+            advanceToken();
+            if (currentTokenType() != tokenType.literal_FILENAME && currentTokenType() != tokenType.literal_STRING)
+            {
+                throwException();
+                return null;
+            }
+            else
+            {
+                returnStatement.filename = _currentToken;
+                advanceToken();
+                return returnStatement;
+            }
+        }
+
         private void StatementList(List<baseSTATEMENT> list)
         {
             if (currentTokenType() != tokenType.resword_CONST
@@ -156,107 +167,165 @@ namespace parSEER
         }
         private baseSTATEMENT Statement()
         {
+            //Done
             if (currentTokenType() == tokenType.resword_CONST)
             {
-                CONSTANT_DECLARATION();
+                var returnStatement = CONSTANT_DECLARATION();
                 EOS();
+                return returnStatement;
             }
-            if (_currentToken._type == tokenType.HTML_TOKEN)
+            //Done
+            else if (_currentToken._type == tokenType.HTML_TOKEN)
             {
-              advanceToken();
+                var returnStatement = HTML_STATEMENT();
+                advanceToken();
+                return returnStatement;
             }
-            if (_currentToken._type == tokenType.symbol_HASHTAG)
+            //Done
+            else if (_currentToken._type == tokenType.symbol_HASHTAG)
             {
-                IncludeStatement();
+               var returnStatement = IncludeStatement();
+               return returnStatement;
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_STRUCT)
             {
-                STRUCT_DECLARATION();
+               var returnStatement =  STRUCT_DECLARATION();
+               return returnStatement;
             }
             else if (currentTokenType() == tokenType.resword_ENUM)
             {
-                ENUM_DECLARATION();
+               return ENUM_DECLARATION();
             }
-            else if (checkALLtypes())
+            //Done
+            else if (checkStandardAndVar())
             {
-                if (checkALLtypes())
-                {
+
+                    var type = _currentToken;
                     advanceToken();
-                    unaryList();
-                    ID();
+                    var idExpressionNode = new idEXPRESSION_NODE();
+                    unaryList(idExpressionNode);
+                    idExpressionNode.id = ID();
                     if (currentTokenType() == tokenType.symbol_openParenthesis)
                     {
                         advanceToken();
-                        ListParameterTypes();
+                        var listparameterstype = ListParameterTypes(new List<baseNODE>());
                         if (currentTokenType() == tokenType.symbol_closeParenthesis)
                         {
                             advanceToken();
-                            SCOPE();
-
+                            var scope = SCOPE();
+                            var functionDeclaration = new functionDECLARATION_STATEMENT();
+                            functionDeclaration.returnType = type;
+                            functionDeclaration.idExpressionNode = idExpressionNode;
+                            functionDeclaration.listparameterstype = listparameterstype;
+                            functionDeclaration.scope = scope;
+                            return functionDeclaration;
                         }
                     }
                     else
-                        accesorList();
-                    DECLARATION_variableP();
+                        accesorList(idExpressionNode);
+                    var expression = new EXPRESSION_NODE();
+                    if (currentTokenType() == tokenType.symbol_Assignator)
+                    {
+                        advanceToken();
+                        expression = EXPRESSION();
+                    }
+                    var declarationNode = new DECLARATION_STATEMENT();
+                    declarationNode.type = type;
+                    declarationNode.variableList.Add(new PARAMETERTYPE_NODE { idExpressionNode = idExpressionNode, value = expression });
+                    DECLARATION_variableP(declarationNode);
                     EOS();
-                }
-                EOS();
-               
+                    return declarationNode;  
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_IF)
             {
-                IF_statement(); 
+               return IF_statement(); 
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_SWITCH)
             {
-                SWITCH_statement();
+               return SWITCH_statement();
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_WHILE)
             {
-                WHILE_statement();
+                return WHILE_statement();
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_DO)
             {
-                DO_WHILE_statement();
+                var dowhileStatement = DO_WHILE_statement();
                 EOS();
+                return dowhileStatement;
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_FOR)
             {
-                FOR_statement();
+                return FOR_statement();
             }
+            //Done
             else if (currentTokenType() == tokenType.resword_FOREACH)
             {
-                FOREACH_STATEMENT();
+              return FOREACH_STATEMENT();
             }
+            //Done?
             else if (currentTokenType() == tokenType.ID || isUnaryToken() )
             {
-                try
-                {
-                    ASSIGNATION_statement();
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        ID_EXPRESSIONP();
-                    }
-                    catch (Exception)
-                    {
-                        throwException();
-                    }
-                }
+                var result = FUNCTIONCALL_OR_ASSIGNATION();
                 EOS();
+                return result;
+               
             }
+            //Done
             else if (currentTokenType() == tokenType.symbol_EndOfStatement)
             {
                 EOS();
+                return new EMPTY_STATEMENT();
             }
 
+            return null;
         }
 
-        private void FOREACH_STATEMENT()
+        private baseSTATEMENT FUNCTIONCALL_OR_ASSIGNATION()
         {
-            if (currentTokenType() != tokenType.resword_FOREACH){return;}
+            var idExpresion = new idEXPRESSION_NODE();
+            ID_Simple(idExpresion);
+            if (currentTokenType() == tokenType.symbol_openParenthesis)
+            {
+                advanceToken();
+                ListParameters(idExpresion);
+                if (currentTokenType() == tokenType.symbol_closeParenthesis)
+                {
+                    advanceToken();
+                    var functionCall = new FUNCTIONCALL_STATEMENT();
+                    functionCall.value = idExpresion;
+                    return functionCall;
+                }
+            }
+            else if (currentTokenType() == tokenType.symbol_Assignator ||
+                     currentTokenType() == tokenType.symbol_operAssignator)
+            {
+                var assignationStatement = new ASSIGNATION_STATEMENT();
+                assignationStatement.assignator = _currentToken;
+                advanceToken();
+                var paramtypenode = new PARAMETERTYPE_NODE();
+                paramtypenode.idExpressionNode = idExpresion;
+                paramtypenode.value = EXPRESSION();
+                assignationStatement.assignation = paramtypenode;
+                return assignationStatement;
+            }
+            return null;
+        }
+
+        private baseSTATEMENT HTML_STATEMENT()
+        {
+            return new HTML_STATEMENT {value = _currentToken};
+        }
+
+        private FOREACH_STATEMENT FOREACH_STATEMENT()
+        {
+            if (currentTokenType() != tokenType.resword_FOREACH){return null;}
             advanceToken();
             if (currentTokenType() != tokenType.symbol_openParenthesis)
             {
@@ -264,56 +333,82 @@ namespace parSEER
             }
             advanceToken();
             if(!checkALLtypes()){ throwException();}
+            var type = _currentToken;
             advanceToken();
-            ID_Simple();
+            var idExpression1 = new idEXPRESSION_NODE();
+            ID_Simple(idExpression1);
             if (currentTokenType() != tokenType.symbol_doublePoints) { throwException();}
             advanceToken();
-            ID_Simple();
+            var idExpression2 = new idEXPRESSION_NODE();
+            ID_Simple(idExpression2);
             if (currentTokenType() != tokenType.symbol_closeParenthesis)
             {
                 throwException();
             }
             advanceToken();
-            SCOPE();
+            var parametertypeNode = new PARAMETERTYPE_NODE();
+            parametertypeNode.type = type;
+            parametertypeNode.idExpressionNode = idExpression1;
+            var foreachStatement = new FOREACH_STATEMENT();
+            foreachStatement.typeparameter = parametertypeNode;
+            foreachStatement.variable = idExpression2;
+            foreachStatement.scope = SCOPE();
+            return foreachStatement;
         }
-        private void FOR_statement()
+        private FOR_STATEMENT FOR_statement()
         {
-            if (currentTokenType() != tokenType.resword_FOR) {return; }
+            if (currentTokenType() != tokenType.resword_FOR)
+            { return null; }
             advanceToken();
             if (currentTokenType() != tokenType.symbol_openParenthesis)
             {
                 throwException();
             }
             advanceToken();
-            FOR_EXPRESSION();
-            FOR_EXPRESSION();
-            FOR_EXPRESSION();
+            var forStatement = new FOR_STATEMENT();
+            forStatement.firstExpression = FOR_EXPRESSION();
+            forStatement.secondExpression = FOR_EXPRESSION();
+            forStatement.thirdExpression = FOR_EXPRESSION();
             if (currentTokenType() != tokenType.symbol_closeParenthesis)
             {
                 throwException();
             }
             advanceToken();
-            SCOPE();
+            forStatement.scope = SCOPE();
+            return forStatement;
         }
-        private void FOR_EXPRESSION()
+        private FOREXPRESSION_NODE FOR_EXPRESSION()
         {
-            if (checkStandardAndVar()) { advanceToken(); DECLARATION_variable(); EOS();}
+            var forexpressionNode = new FOREXPRESSION_NODE();
+            
+            if (checkStandardAndVar())
+            {
+                var declarationStatement = new DECLARATION_STATEMENT();
+                declarationStatement.type = _currentToken;
+                advanceToken();
+                DECLARATION_variable(declarationStatement);
+                EOS();
+                forexpressionNode.value = declarationStatement;
+            }
             else if (currentTokenType() == tokenType.ID || isUnaryToken())
             {
-                ASSIGNATION_statement();
+                forexpressionNode.value = ASSIGNATION_statement();
                 EOS();
             }
             else
             {
-                EXPRESSION(); EOS();
+                forexpressionNode.value = EXPRESSION(); EOS();
             }
+            return forexpressionNode;
         }
-        private void DO_WHILE_statement()
+        private WHILE_STATEMENT DO_WHILE_statement()
         {
-            if (currentTokenType() != tokenType.resword_DO) { return; }
+            if (currentTokenType() != tokenType.resword_DO) { return null; }
             advanceToken();
-            SCOPE();
-            if (currentTokenType() != tokenType.resword_WHILE) { return; }
+            var whileStatement = new WHILE_STATEMENT();
+            whileStatement.isDoWhile = true;
+            whileStatement.scope = SCOPE();
+            if (currentTokenType() != tokenType.resword_WHILE) { throwException(); }
             advanceToken();
 
             if (currentTokenType() != tokenType.symbol_openParenthesis)
@@ -321,46 +416,57 @@ namespace parSEER
                 throwException();
             }
             advanceToken();
-            EXPRESSION();
-            if (currentTokenType() != tokenType.symbol_closeParenthesis)
-            {
-                throwException();
-            }
+           whileStatement.expression =  EXPRESSION();
+            if (currentTokenType() != tokenType.symbol_closeParenthesis){throwException();}
             advanceToken();
+            return whileStatement;
         }
-        private void WHILE_statement()
+        private WHILE_STATEMENT WHILE_statement()
         {
-            if (currentTokenType() != tokenType.resword_WHILE){ return;}
+            if (currentTokenType() != tokenType.resword_WHILE){ return null;}
             advanceToken();
             if (currentTokenType() != tokenType.symbol_openParenthesis){ throwException();}
             advanceToken();
-            EXPRESSION();
+
+            var whileStatement = new WHILE_STATEMENT();
+             
+            whileStatement.expression = EXPRESSION();
             if (currentTokenType() != tokenType.symbol_closeParenthesis) { throwException();}
             advanceToken();
-            SCOPE();
+           whileStatement.scope = SCOPE();
+            return whileStatement;
         }
-        private void ASSIGNATION_statement()
+        private ASSIGNATION_STATEMENT ASSIGNATION_statement()
         {
-            ID_Simple();
+            var idExpresion = new idEXPRESSION_NODE();
+            ID_Simple(idExpresion);
             if (currentTokenType() != tokenType.symbol_Assignator &&
                 currentTokenType() != tokenType.symbol_operAssignator)
             {
                 throwException();
             }
+            var assignator = _currentToken;
             advanceToken();
-            EXPRESSION();
+            var parametertype = new PARAMETERTYPE_NODE();
+            parametertype.idExpressionNode = idExpresion;
+            parametertype.value = EXPRESSION();
+            var assignationStatement = new ASSIGNATION_STATEMENT();
+            assignationStatement.assignator = assignator;
+            assignationStatement.assignation = parametertype;
+            return assignationStatement;
 
         }
-        private void SWITCH_statement()
+        private SWITCH_STATEMENT SWITCH_statement()
         {
-            if(currentTokenType() != tokenType.resword_SWITCH) { return;}
+            if(currentTokenType() != tokenType.resword_SWITCH) { return null; }
             advanceToken();
             if (currentTokenType() != tokenType.symbol_openParenthesis)
             {
                 throwException();
             }
             advanceToken();
-            ID_Simple();
+            var idExpression = new idEXPRESSION_NODE();
+            ID_Simple(idExpression);
             if (currentTokenType() != tokenType.symbol_closeParenthesis)
             {
                 throwException();
@@ -368,20 +474,30 @@ namespace parSEER
            
             advanceToken();
 
-            SWITCH_SCOPE();
+            var switchStatement = new SWITCH_STATEMENT();
+            switchStatement.id = idExpression;
+            switchStatement.switchScope = SWITCH_SCOPE();
+            return switchStatement;
         }
-        private void SWITCH_SCOPE()
+        private switchSCOPE_NODE SWITCH_SCOPE()
         {
             if(currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException();}
             advanceToken();
-            LISTCASE();
-            DEFAULTCASE();
+
+            var listCase = new List<CASE_NODE>();
+            LISTCASE(listCase);
+            var defaultcaseNode = new CASE_NODE();
+            DEFAULTCASE(defaultcaseNode);
+            var switchscopeNode = new switchSCOPE_NODE();
+            switchscopeNode.listCases = listCase;
+            switchscopeNode.defaultCase = defaultcaseNode;
             if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException();}
             advanceToken();
 
-
+            return switchscopeNode;
+            
         }
-        private void DEFAULTCASE()
+        private void DEFAULTCASE(CASE_NODE node)
         {
             if(currentTokenType() != tokenType.resword_DEFAULT) { return;}
                 advanceToken();
@@ -389,72 +505,84 @@ namespace parSEER
                 advanceToken();
             if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException(); }
             advanceToken();
-            ListBasicStatements();
+            var listBasicStatemnt = new List<baseSTATEMENT>();
+            ListBasicStatements(listBasicStatemnt);
+
+            var caseNode = new CASE_NODE();
+            caseNode.statements = listBasicStatemnt;
             if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException(); }
             advanceToken();
 
         }
-        private void LISTCASE()
-        {
-             CASE();
-        }
-        private void CASE()
+        private void LISTCASE(List<CASE_NODE> list)
         {
             if(currentTokenType() != tokenType.resword_CASE) { return;}
             advanceToken();
-            EXPRESSION();
+            var expression = EXPRESSION();
             if(currentTokenType() != tokenType.symbol_doublePoints) { throwException();}
             advanceToken();
 
             if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException(); }
             advanceToken();
-            ListBasicStatements();
+            var listBasicStatemnt = new List<baseSTATEMENT>();
+            ListBasicStatements(listBasicStatemnt);
+
+            var caseNode = new CASE_NODE();
+            caseNode.expression = expression; 
+            caseNode.statements = listBasicStatemnt;
 
             if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException(); }
             advanceToken();
 
-
-            LISTCASE();
+            list.Add(caseNode);
+            LISTCASE(list);
         }
-        private void IF_statement()
+        private baseSTATEMENT IF_statement()
         {
             if (currentTokenType() != tokenType.resword_IF)
             {
-                return;
+                return null;
             }
             advanceToken();
             if (currentTokenType() != tokenType.symbol_openParenthesis)
             {
                 throwException();
+                return null;
             }
+            var ifStatement = new IF_STATEMENT();
+            
             advanceToken();
-            EXPRESSION();
+            ifStatement.expression = EXPRESSION();
             if (currentTokenType() != tokenType.symbol_closeParenthesis)
             {
                 throwException();
             }
             advanceToken();
-            SCOPE();
-            ELSE_statement();
+            ifStatement.scope = SCOPE();
+            ifStatement.elseNode = ELSE_statement();
+            return ifStatement;
         }
-        private void ELSE_statement()
+        private ELSE_NODE ELSE_statement()
         {
             if (currentTokenType() != tokenType.resword_ELSE)
             {
-                return;
+                return null;
             }
             advanceToken();
-            SCOPE();
+            var elseNode = new ELSE_NODE();
+            elseNode.scope = SCOPE();
+            return elseNode;
         }
-        private void ENUM_DECLARATION()
+        private ENUM_STATEMENT ENUM_DECLARATION()
         {
-            if (currentTokenType() != tokenType.resword_ENUM) return;
+            if (currentTokenType() != tokenType.resword_ENUM) return null;
 
             advanceToken();
             if (currentTokenType() != tokenType.ID)
             {
                 throwException();
             }
+            var id = _currentToken;
             advanceToken();
 
             if (currentTokenType() != tokenType.symbol_openCurlyBraces)
@@ -462,150 +590,69 @@ namespace parSEER
                 throwException();
             }
             advanceToken();
-            ListEnums();
-
+            var enumStatement = new ENUM_STATEMENT();
+            enumStatement.id = id;
+           
+            var list = new List<PARAMETERTYPE_NODE>();
+            ListEnums(list);
+            enumStatement.list = list;
             if (currentTokenType() != tokenType.symbol_closeCurlyBraces)
             {
                 throwException();
             }
             advanceToken();
+            return enumStatement;
+            
         }
-        private void ListEnums()
+        private void ListEnums(List<PARAMETERTYPE_NODE> list)
         {
             if (currentTokenType() != tokenType.ID) return;
+            var paramtypeNode = new PARAMETERTYPE_NODE();
+            paramtypeNode.idExpressionNode = new idEXPRESSION_NODE {id = _currentToken};
             advanceToken();
             if (currentTokenType() == tokenType.symbol_Assignator)
             {
                 advanceToken();
-                EXPRESSION();
+                paramtypeNode.value = EXPRESSION();
+                list.Add(paramtypeNode);
             }
             if (currentTokenType() == tokenType.symbol_SEPARATOR)
             {
                 advanceToken();
-                ListEnums();
+                ListEnums(list);
             }
 
-        }
-        private void SCOPE()
+        }     
+        private RETURN_STATEMENT RETURN_statement()
         {
-            if (currentTokenType() == tokenType.symbol_openCurlyBraces)
-            {
-                advanceToken();
-                ListBasicStatements();
-                if (currentTokenType() == tokenType.symbol_closeCurlyBraces)
-                {
-                    advanceToken();
-                    return;
-                }
-                throwException();
-            }
-            else
-            {
-                BasicStatement();
-            }
-        }
-        private void BasicStatement()
-        {
-            if (checkStandardAndVar())
-            {
-                    advanceToken();
-                    DECLARATION_variable();
-                    EOS();
-            }
-            else if (_currentToken._type == tokenType.HTML_TOKEN)
-            {
-                advanceToken();
-            }
-            else if (currentTokenType() == tokenType.resword_IF)
-            {
-                IF_statement();
-            }
-            else if (currentTokenType() == tokenType.resword_SWITCH)
-            {
-                SWITCH_statement();
-            }
-            else if (currentTokenType() == tokenType.resword_WHILE)
-            {
-                WHILE_statement();
-            }
-            else if (currentTokenType() == tokenType.resword_DO)
-            {
-                DO_WHILE_statement();
-                EOS();
-            }
-            else if (currentTokenType() == tokenType.resword_FOR)
-            {
-                FOR_statement();
-            }
-            else if (currentTokenType() == tokenType.resword_FOREACH)
-            {
-                FOREACH_STATEMENT();
-            }
-            else if (isUnaryToken() || currentTokenType() == tokenType.ID)
-            {
-                try
-                {
-                    ASSIGNATION_statement();
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        ID_EXPRESSIONP();
-                    }
-                    catch (Exception)
-                    {
-                        throwException();
-                    }
-                }
-                EOS();
-            }
-            else if (currentTokenType() == tokenType.resword_RETURN)
-            {
-                RETURN_statement();
-                EOS();
-            }
-            else if (currentTokenType() == tokenType.resword_CONTINUE)
-            {
-                CONTINUE_statement();
-                EOS();
-            }
-            else if (currentTokenType() == tokenType.resword_BREAK)
-            {
-                BREAK_statement(); EOS();
-            }
-            else if (currentTokenType() == tokenType.symbol_EndOfStatement)
-            {
-                EOS();
-            }
-        }
-        private void RETURN_statement()
-        {
-            if (currentTokenType() != tokenType.resword_RETURN){ return;}
+            if (currentTokenType() != tokenType.resword_RETURN){ return null;}
             advanceToken();
-
+            var returnStatement = new RETURN_STATEMENT();
             if (currentTokenType() != tokenType.symbol_EndOfStatement)
             {
-                EXPRESSION();
+                returnStatement.expression = EXPRESSION();
             }
+            return returnStatement;
         }
-        private void BREAK_statement()
+        private BREAK_STATEMENT BREAK_statement()
         {
             if (currentTokenType() != tokenType.resword_BREAK)
             {
-                return;
+                return null;
             }
             advanceToken();
+            return new BREAK_STATEMENT();
         }
-        private void CONTINUE_statement()
+        private CONTINUE_STATEMENT CONTINUE_statement()
         {
             if (currentTokenType() != tokenType.resword_CONTINUE)
             {
-                return;
+                return null;
             }
             advanceToken();
+            return new CONTINUE_STATEMENT();
         }
-        private void ListBasicStatements()
+        private void ListBasicStatements(List<baseSTATEMENT> list)
         {
                 if (!checkStandardAndVar()
                 && currentTokenType() != tokenType.resword_IF
@@ -621,82 +668,246 @@ namespace parSEER
                 && currentTokenType() != tokenType.resword_BREAK
                 && currentTokenType() != tokenType.ID
                 && currentTokenType() != tokenType.symbol_EndOfStatement) return;
-                BasicStatement();
-                ListBasicStatements();
+                list.Add(BasicStatement());
+                ListBasicStatements(list);
         }
-        private void ListParameterTypes()
+        private baseSTATEMENT BasicStatement()
         {
-            if (!checkALLtypes()) return;
+            //Done
+            if (checkStandardAndVar())
+            {
+                var type = _currentToken;
+                advanceToken();
+                var idExpressionNode = new idEXPRESSION_NODE();
+                unaryList(idExpressionNode);
+                idExpressionNode.id = ID();
+                accesorList(idExpressionNode);
+                var expression = new EXPRESSION_NODE();
+                if (currentTokenType() == tokenType.symbol_Assignator)
+                {
+                    advanceToken();
+                    expression = EXPRESSION();
+                }
+                var declarationNode = new DECLARATION_STATEMENT();
+                declarationNode.type = type;
+                declarationNode.variableList.Add(new PARAMETERTYPE_NODE { idExpressionNode = idExpressionNode, value = expression });
+                DECLARATION_variableP(declarationNode);
+                EOS();
+                return declarationNode;
+            }
+            //Done
+            else if (_currentToken._type == tokenType.HTML_TOKEN)
+            {
+                var returnStatement = HTML_STATEMENT();
+                advanceToken();
+                return returnStatement;
+            }
+            //Done      
+            else if (currentTokenType() == tokenType.resword_IF)
+            {
+               return  IF_statement();
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_SWITCH)
+            {
+                return SWITCH_statement();
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_WHILE)
+            {
+              return WHILE_statement();
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_DO)
+            {
+                var dowhileStatement = DO_WHILE_statement();
+                EOS();
+                return dowhileStatement;
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_FOR)
+            {
+              return FOR_statement();
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_FOREACH)
+            {
+               return FOREACH_STATEMENT();
+            }
+            //Done?
+            else if (isUnaryToken() || currentTokenType() == tokenType.ID)
+            {
+                var result = FUNCTIONCALL_OR_ASSIGNATION();
+                EOS();
+                return result;
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_RETURN)
+            {
+                var result = RETURN_statement();
+                EOS();
+                return result;
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_CONTINUE)
+            {
+                var result =  CONTINUE_statement();
+                EOS();
+                return result;
+            }
+            //Done
+            else if (currentTokenType() == tokenType.resword_BREAK)
+            {
+                var result = BREAK_statement();
+                EOS();
+                return result;
+            }
+            //Done
+            else if (currentTokenType() == tokenType.symbol_EndOfStatement)
+            {
+                EOS();
+                return new EMPTY_STATEMENT();
+            }
+            return null;
+        }
+        private List<baseNODE> ListParameterTypes(List<baseNODE> list)
+        {
+            if (!checkALLtypes()) return list;
+
+            var parametertypeNode = new PARAMETERTYPE_NODE();
+            var type = _currentToken;
+            parametertypeNode.type = type;
             advanceToken();
+            var idExpressionNode = new idEXPRESSION_NODE();
             Console.WriteLine("DEFINITION OF PARAMETERS");
-            ID_Simple();
+            ID_Simple(idExpressionNode);
+            parametertypeNode.idExpressionNode = idExpressionNode;
             if (currentTokenType() == tokenType.symbol_Assignator)
             {
                 advanceToken();
-                EXPRESSION();
+                var expressionNode = EXPRESSION();
+                parametertypeNode.value = expressionNode;
             }
-            ListParametersTypesP();
+            list.Add(parametertypeNode);
+            return ListParametersTypesP(list);
         }
-        private void ListParametersTypesP()
+        private List<baseNODE> ListParametersTypesP(List<baseNODE> list)
         {
-            if (currentTokenType() != tokenType.symbol_SEPARATOR) { return; }
+            if (currentTokenType() != tokenType.symbol_SEPARATOR) { return list; }
             advanceToken();
-            ListParameterTypes();
+            return ListParameterTypes(list);
 
         }
-        private void STRUCT_DECLARATION()
+        private baseSTATEMENT STRUCT_DECLARATION()
         {
+            var structNode = new STRUCT_STATEMENT();
             if (currentTokenType() != tokenType.resword_STRUCT) throwException();
             advanceToken();
-            ID();
-            STRUCT_SCOPE();
+            var idExpresionNode = new idEXPRESSION_NODE();
+            unaryList(idExpresionNode);
+            idExpresionNode.id = ID();
+
+            var structScope = STRUCT_SCOPE();
+            structNode.idExpression = idExpresionNode;
+            structNode.scope = structScope;
+            return structNode;
         }
-        private void STRUCT_SCOPE()
+        private baseNODE STRUCT_SCOPE()
         {
             if (currentTokenType() != tokenType.symbol_openCurlyBraces) { throwException();}
                 advanceToken();
-
-            ListDeclarations();
+            var structNode = new structSCOPE__NODE();
+            structNode.listOfDeclarations = ListDeclarations(new List<baseSTATEMENT>());
 
             if (currentTokenType() != tokenType.symbol_closeCurlyBraces) { throwException();}
                 advanceToken();
+            return structNode;
         }
-        private void ListDeclarations()
-        {
-            if (checkALLtypes() || currentTokenType() == tokenType.resword_STRUCT)
-            {
-                Declaration();
-            }
-
-        }
-        private void Declaration()
+        private List<baseSTATEMENT> ListDeclarations(List<baseSTATEMENT> node)
         {
             if (checkALLtypes())
             {
+                var declaration =  Declaration();
+                node.Add(declaration);
+                ListDeclarations(node);
+            }
+            return node;
+
+        }
+        private baseSTATEMENT Declaration()
+        {
+            if (checkStandardAndVar())
+            {
+
+                var type = _currentToken;
                 advanceToken();
-                unaryList();
-                ID();
+                var idExpressionNode = new idEXPRESSION_NODE();
+                unaryList(idExpressionNode);
+                idExpressionNode.id = ID();
                 if (currentTokenType() == tokenType.symbol_openParenthesis)
                 {
                     advanceToken();
-                    ListParameterTypes();
+                    var listparameterstype = ListParameterTypes(new List<baseNODE>());
                     if (currentTokenType() == tokenType.symbol_closeParenthesis)
                     {
                         advanceToken();
-                        SCOPE();
+                        var scope = SCOPE();
+                        var functionDeclaration = new functionDECLARATION_STATEMENT();
+                        functionDeclaration.returnType = type;
+                        functionDeclaration.idExpressionNode = idExpressionNode;
+                        functionDeclaration.listparameterstype = listparameterstype;
+                        functionDeclaration.scope = scope;
+                        return functionDeclaration;
                     }
                 }
                 else
-                    accesorList();
-                DECLARATION_variableP();
+                accesorList(idExpressionNode);
+                var expression = new EXPRESSION_NODE();
+                if (currentTokenType() == tokenType.symbol_Assignator)
+                {
+                    advanceToken();
+                    expression = EXPRESSION();
+                }
+                var declarationNode = new DECLARATION_STATEMENT();
+                declarationNode.type = type;
+                declarationNode.variableList.Add(new  PARAMETERTYPE_NODE {idExpressionNode = idExpressionNode,value = expression});
+                DECLARATION_variableP(declarationNode);
                 EOS();
+                return declarationNode;
+
             }
             else if (currentTokenType() == tokenType.resword_STRUCT)
             {
-                STRUCT_DECLARATION();
+               return STRUCT_DECLARATION();
             }
+            throwException();
+            return null;
         }
-        private void CONSTANT_DECLARATION()
+        private SCOPE_NODE SCOPE()
+        {
+            var scopeNode = new SCOPE_NODE();
+            var basicStatementList = new List<baseSTATEMENT>();
+            if (currentTokenType() == tokenType.symbol_openCurlyBraces)
+            {
+                advanceToken();
+                ListBasicStatements(basicStatementList);
+                if (currentTokenType() == tokenType.symbol_closeCurlyBraces)
+                {
+                    advanceToken();
+                    scopeNode.basicStatementList = basicStatementList;
+                    return scopeNode;
+                }
+                throwException();
+            }
+            else
+            {
+               basicStatementList.Add(BasicStatement());
+               scopeNode.basicStatementList = basicStatementList;
+               return scopeNode;
+            }
+            return null;
+        }
+        private baseSTATEMENT CONSTANT_DECLARATION()
         {
 
             if (currentTokenType() == tokenType.resword_CONST)
@@ -704,30 +915,33 @@ namespace parSEER
 
             if (checkStandardAndVar())
                 advanceToken();
-
-            DECLARATION_variable();
-
-
+            var declarationStatement = new DECLARATION_STATEMENT();
+            declarationStatement.isFirstConstant = true;
+            DECLARATION_variable(declarationStatement);
+            return declarationStatement;
         }
-        private void DECLARATION_variable()
+        private void DECLARATION_variable(DECLARATION_STATEMENT statement)
         {
-            ID_Simple();
-            DECLARATION_variableP();
-        }
-        private void DECLARATION_variableP()
-        {
-
+            var paramtypeNode = new PARAMETERTYPE_NODE();
+            var idExpressionNode = new idEXPRESSION_NODE();
+            ID_Simple(idExpressionNode);
+            paramtypeNode.idExpressionNode = idExpressionNode;
             if (currentTokenType() == tokenType.symbol_Assignator)
             {
                 EQUAL();
-                EXPRESSION();
-                SEPARATOR();
-                DECLARATION_variable();
+                var expression = EXPRESSION();
+                paramtypeNode.value = expression;
+                statement.variableList.Add(paramtypeNode);
             }
-            else if (currentTokenType() == tokenType.symbol_SEPARATOR)
+            DECLARATION_variableP(statement);
+        }
+        private void DECLARATION_variableP(DECLARATION_STATEMENT statement)
+        {
+
+            if (currentTokenType() == tokenType.symbol_SEPARATOR)
             {
                 SEPARATOR();
-                DECLARATION_variable();
+                DECLARATION_variable(statement);
             }
 
         }
@@ -1099,7 +1313,7 @@ namespace parSEER
             }
             catch (Exception)
             {
-                Console.Write("Parameterless FUNCTIONCALL AT" + _currentToken._coordinates + " ");
+              
                 return;
             }
         }

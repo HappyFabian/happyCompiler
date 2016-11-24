@@ -5,3 +5,10 @@ C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\bin\Debug\l
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.csprojResolveAssemblyReference.cache
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.dll
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\bin\Debug\treeHOUSE.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\bin\Debug\treeHOUSE.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\bin\Debug\lexiCONOMICON.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\bin\Debug\lexiCONOMICON.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.csprojResolveAssemblyReference.cache
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\treeHOUSE\obj\Debug\treeHOUSE.pdb
