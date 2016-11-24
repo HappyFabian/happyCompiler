@@ -92,6 +92,7 @@
 
         resword_RETURN,
         resword_DEFAULT,
-        HTML_TOKEN
+        HTML_TOKEN,
+        symbol_structAccessor
     }
 }

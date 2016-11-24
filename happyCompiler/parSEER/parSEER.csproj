@@ -48,6 +48,10 @@
       <Project>{175FAD0A-4360-405C-8C40-28C7667DEBA9}</Project>
       <Name>lexiCONOMICON</Name>
     </ProjectReference>
+    <ProjectReference Include="..\treeHOUSE\treeHOUSE.csproj">
+      <Project>{0744ca78-6728-4937-8c56-50be5baaff11}</Project>
+      <Name>treeHOUSE</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
