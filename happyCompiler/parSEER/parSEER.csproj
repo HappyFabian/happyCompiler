@@ -44,13 +44,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\lexiCONOMICON\lexiCONOMICON.csproj">
-      <Project>{175FAD0A-4360-405C-8C40-28C7667DEBA9}</Project>
-      <Name>lexiCONOMICON</Name>
-    </ProjectReference>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <ProjectReference Include="..\lexiCONOMICON\lexiCONOMICON.csproj">
+      <Project>{175fad0a-4360-405c-8c40-28c7667deba9}</Project>
+      <Name>lexiCONOMICON</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\treeHOUSE\treeHOUSE.csproj">
+      <Project>{0744ca78-6728-4937-8c56-50be5baaff11}</Project>
+      <Name>treeHOUSE</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

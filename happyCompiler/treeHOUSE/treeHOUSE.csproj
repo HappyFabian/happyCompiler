@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>0744ca78-6728-4937-8c56-50be5baaff11</ProjectGuid>
+    <ProjectGuid>{0744CA78-6728-4937-8C56-50BE5BAAFF11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>treeHOUSE</RootNamespace>
@@ -30,24 +30,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ACCESSOR_NODE.cs" />
+    <Compile Include="AND_NODE.cs" />
+    <Compile Include="ARITHMETIC_NODE.cs" />
+    <Compile Include="ARRAY_NODE.cs" />
+    <Compile Include="bAND_NODE.cs" />
+    <Compile Include="baseNODE.cs" />
+    <Compile Include="bOR_NODE.cs" />
+    <Compile Include="bXOR_NODE.cs" />
+    <Compile Include="DECLARATION_STATEMENT.cs" />
+    <Compile Include="EQUAL_NODE.cs" />
+    <Compile Include="EXPRESSION_NODE.cs" />
+    <Compile Include="FACTOR_NODE.cs" />
+    <Compile Include="functionDECLARATION_STATEMENT.cs" />
+    <Compile Include="idEXPRESSION_NODE.cs" />
+    <Compile Include="LITERAL_NODE.cs" />
+    <Compile Include="OR_NODE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RELATION_NODE.cs" />
+    <Compile Include="rootNODE.cs" />
+    <Compile Include="SHIFT_NODE.cs" />
+    <Compile Include="baseSTATEMENT.cs" />
+    <Compile Include="TERM_NODE.cs" />
+    <Compile Include="UNARY_NODE.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\lexiCONOMICON\lexiCONOMICON.csproj">
+      <Project>{175fad0a-4360-405c-8c40-28c7667deba9}</Project>
+      <Name>lexiCONOMICON</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -57,5 +78,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
- </Project>
+</Project>
