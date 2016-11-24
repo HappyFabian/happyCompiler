@@ -12,5 +12,3 @@ C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\lex
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.csprojResolveAssemblyReference.cache
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.dll
 C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\obj\Debug\parSEER.pdb
-C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\treeHOUSE.dll
-C:\Users\HapphFabian\Documents\happyCompiler\happyCompiler\parSEER\bin\Debug\treeHOUSE.pdb

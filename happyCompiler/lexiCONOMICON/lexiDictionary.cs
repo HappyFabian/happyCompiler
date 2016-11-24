@@ -110,7 +110,7 @@ namespace lexiCONOMICON
         {
             _symbols = new Dictionary<string, tokenType>();
             //7
-            _symbols.Add("->", tokenType.symbol_structAccessor);
+            _symbols.Add("->", tokenType.symbol_Accessor);
             _symbols.Add(":", tokenType.symbol_doublePoints);
             _symbols.Add("#", tokenType.symbol_HASHTAG);
             _symbols.Add("//", tokenType.symbol_COMMENTLINE);     
