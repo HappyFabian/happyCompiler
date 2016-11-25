@@ -1,5 +1,45 @@
-<div>
-  <% string whatHaveIDone = "Fuck my Life";%>
- 
-  <% print(whatHaveIDone); %>
-</div>
+<% if(true) {%> hola <%}
+
+struct Edge
+{
+	int src, dest, weight;
+};
+
+// a structure to represent a connected, undirected and weighted graph
+struct Graph
+{
+	// V-> Number of vertices, E-> Number of edges
+	int V, E;
+
+	// graph is represented as an array of edges. Since the graph is
+	// undirected, the edge from src to dest is also edge from dest
+	// to src. Both are counted as 1 edge here.
+	var edge = Edge();
+};
+
+// Creates a graph with V vertices and E edges
+var * createGraph(int V, int E)
+{
+	graph->V = V;
+	graph->E = E;
+	return graph;
+}
+
+
+struct subset
+{
+	int parent;
+	int rank;
+}
+
+int find(struct subsets, int i)
+{
+	// find root and make root as parent of i (path compression)
+	if (subsets[i].parent != i){
+		subsets[i].parent = find(subsets, subsets[i].parent);}
+
+	return subsets[i].parent;
+}
+;
+
+%>

@@ -11,7 +11,7 @@ namespace treeHOUSE
     {
         public List<UNARY_NODE> unaryList = new List<UNARY_NODE>();
         public tokenObject id;
-        public List<baseNODE> accessorList;
-        public List<EXPRESSION_NODE> parameters;
+        public List<baseNODE> accessorList = new List<baseNODE>();
+        public List<EXPRESSION_NODE> parameters = new List<EXPRESSION_NODE>();
     }
 }

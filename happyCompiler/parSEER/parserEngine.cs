@@ -198,7 +198,7 @@ namespace parSEER
                return ENUM_DECLARATION();
             }
             //Done
-            else if (checkStandardAndVar())
+            else if (checkALLtypes())
             {
 
                     var type = _currentToken;
@@ -441,7 +441,11 @@ namespace parSEER
             var idExpresion = new idEXPRESSION_NODE();
             ID_Simple(idExpresion);
             if (currentTokenType() != tokenType.symbol_Assignator &&
-                currentTokenType() != tokenType.symbol_operAssignator)
+                currentTokenType() != tokenType.symbol_operAssignator
+                && currentTokenType() != tokenType.reloper_LESSTHAN
+                && currentTokenType() != tokenType.reloper_LESSOREQUAL
+                && currentTokenType() != tokenType.reloper_GREATERTHAN
+                && currentTokenType() != tokenType.reloper_GREATEROREQUAL)
             {
                 throwException();
             }
@@ -662,6 +666,7 @@ namespace parSEER
                 && currentTokenType() != tokenType.resword_FOR
                 && currentTokenType() != tokenType.resword_FOREACH
                 && currentTokenType() != tokenType.resword_SWITCH
+                && currentTokenType() != tokenType.HTML_TOKEN
                 && !isUnaryToken()
                 && currentTokenType() != tokenType.resword_RETURN
                 && currentTokenType() != tokenType.resword_CONTINUE
@@ -674,7 +679,7 @@ namespace parSEER
         private baseSTATEMENT BasicStatement()
         {
             //Done
-            if (checkStandardAndVar())
+            if (checkALLtypes())
             {
                 var type = _currentToken;
                 advanceToken();
@@ -1010,15 +1015,22 @@ namespace parSEER
             {
                 advanceToken();
                 var arrayNode = new ARRAY_NODE();
-                var whatExpression = EXPRESSION();
-                arrayNode.expressions.Add(whatExpression);
-                ARRAYCONTENT(arrayNode);
-                if (currentTokenType() == tokenType.symbol_arrayClose)
-                {
-                    node.accessorList.Add(arrayNode);
-                    advanceToken();
-                    return true;
+                if(currentTokenType() != tokenType.symbol_arrayClose)
+                { 
+                    var whatExpression = EXPRESSION();
+                    arrayNode.expressions.Add(whatExpression);
+                    ARRAYCONTENT(arrayNode);
+                    if (currentTokenType() == tokenType.symbol_arrayClose)
+                    {
+                        node.accessorList.Add(arrayNode);
+                        advanceToken();
+                        return true;
+                    }
+
                 }
+
+                node.accessorList.Add(arrayNode);
+                return true;
 
             }
             return false;

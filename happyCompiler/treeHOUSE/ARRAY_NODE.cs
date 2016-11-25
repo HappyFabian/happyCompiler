@@ -8,6 +8,6 @@ namespace treeHOUSE
 {
     public class ARRAY_NODE : baseNODE
     {
-        public List<EXPRESSION_NODE> expressions;
+        public List<EXPRESSION_NODE> expressions = new List<EXPRESSION_NODE>();
     }
 }

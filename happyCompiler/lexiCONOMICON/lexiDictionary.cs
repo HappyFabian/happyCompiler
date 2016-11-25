@@ -136,8 +136,10 @@ namespace lexiCONOMICON
             _symbols.Add("}", tokenType.symbol_closeCurlyBraces);
             _symbols.Add("[", tokenType.symbol_arrayOpen);
             _symbols.Add("]", tokenType.symbol_arrayClose);
+            /*
             _symbols.Add("<",tokenType.symbol_fileOpen);
             _symbols.Add(">", tokenType.symbol_fileClose);
+            */
             _symbols.Add('\''.ToString(), tokenType.symbol_singleQuote);
             _symbols.Add('"'.ToString(), tokenType.symbol_doubleQuotes);
 

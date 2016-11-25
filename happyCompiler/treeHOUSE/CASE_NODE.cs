@@ -8,7 +8,7 @@ namespace treeHOUSE
 {
     public class CASE_NODE
     {
-        public List<baseSTATEMENT> statements;
+        public List<baseSTATEMENT> statements = new List<baseSTATEMENT>();
         public EXPRESSION_NODE expression;
     }
 }
