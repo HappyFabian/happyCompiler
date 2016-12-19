@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using parSEER.Interpretative.Values;
+using parSEER.Semantics.Types;
+
+namespace parSEER.Semantics.Tree.Expression.literalNodes
+{
+    public class boolNode : expressionNode
+    {
+        public bool Value { get; set; }
+
+        public override nodeType EvaluateTypes()
+        {
+            return new boolType();
+        }
+
+        public override nodeValue Interpret()
+        {
+            return new boolValue {Value = Value};
+        }
+    }
+}

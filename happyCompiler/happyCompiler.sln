@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "happyCompiler", "happyCompi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lexiCONOMICON", "lexiCONOMICON\lexiCONOMICON.csproj", "{175FAD0A-4360-405C-8C40-28C7667DEBA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parSEER", "parSEER\parSEER.csproj", "{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "parSEER", "parSEER\parSEER.csproj", "{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{175FAD0A-4360-405C-8C40-28C7667DEBA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

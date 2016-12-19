@@ -43,7 +43,7 @@ namespace lexiCONOMICON
         private void defineRelational()
         {
             _relationalOperators = new Dictionary<string, tokenType>();
-            _relationalOperators.Add("==", tokenType.reloper_COMPARE);
+            _relationalOperators.Add("==", tokenType.reloper_EQUAL);
             _relationalOperators.Add("<", tokenType.reloper_LESSTHAN);
             _relationalOperators.Add("<=", tokenType.reloper_LESSOREQUAL);
             _relationalOperators.Add(">", tokenType.reloper_GREATERTHAN);
@@ -91,6 +91,7 @@ namespace lexiCONOMICON
             _reservedWords.Add("do", tokenType.resword_DO);
             _reservedWords.Add("switch", tokenType.resword_SWITCH);
             _reservedWords.Add("case", tokenType.resword_CASE);
+            _reservedWords.Add("assign", tokenType.assign);
 
             _reservedWords.Add("default", tokenType.resword_DEFAULT);
             _reservedWords.Add("foreach", tokenType.resword_FOREACH);
@@ -136,8 +137,8 @@ namespace lexiCONOMICON
             _symbols.Add("}", tokenType.symbol_closeCurlyBraces);
             _symbols.Add("[", tokenType.symbol_arrayOpen);
             _symbols.Add("]", tokenType.symbol_arrayClose);
-            _symbols.Add("<",tokenType.symbol_fileOpen);
-            _symbols.Add(">", tokenType.symbol_fileClose);
+           // _symbols.Add("<",tokenType.symbol_fileOpen);
+           // _symbols.Add(">", tokenType.symbol_fileClose);
             _symbols.Add('\''.ToString(), tokenType.symbol_singleQuote);
             _symbols.Add('"'.ToString(), tokenType.symbol_doubleQuotes);
 

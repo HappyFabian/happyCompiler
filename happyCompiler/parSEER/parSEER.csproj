@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C870CCA8-0272-4247-B7D2-B4E9B2EC814B}</ProjectGuid>
+    <ProjectGuid>{E744A4C2-EF5B-4D94-AB99-DC8CF9658A05}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>parSEER</RootNamespace>
@@ -40,18 +40,86 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="parserEngine.cs" />
+    <Compile Include="compilerEngine.cs" />
+    <Compile Include="Exceptions\ExceptionClasses\EndOfStatementException.cs" />
+    <Compile Include="Interpretative\Values\boolValue.cs" />
+    <Compile Include="Interpretative\Values\charValue.cs" />
+    <Compile Include="Interpretative\Values\floatValue.cs" />
+    <Compile Include="Interpretative\Values\htmlValue.cs" />
+    <Compile Include="Parsing\contextLayer.cs" />
+    <Compile Include="Parsing\contextTable.cs" />
+    <Compile Include="Parsing\Metadata\functionMetadata.cs" />
+    <Compile Include="Parsing\Metadata\metadataNode.cs" />
+    <Compile Include="Parsing\Metadata\variableMetadata.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\bit\bandNode.cs" />
+    <Compile Include="Interpretative\Values\stringValue.cs" />
+    <Compile Include="Semantics\Tree\Statements\returnStatement.cs" />
+    <Compile Include="Semantics\Types\literalTypes\voidType.cs" />
+    <Compile Include="Semantics\Tree\Statements\functionDeclarativeStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\whileStatement.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\boolNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\characterNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\floatNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\htmlNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\idNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\stringNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\idcalculationNodes\arrayNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\idcalculationNodes\functionCallNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\idcalculationNodes\structAccessor.cs" />
+    <Compile Include="Semantics\Tree\Statements\assignationStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\declarativeStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\forStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\functionCallStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\hmtlStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\ifStatement.cs" />
+    <Compile Include="Interpretative\Values\numberValue.cs" />
+    <Compile Include="Interpretative\nodeValue.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\arithmetic\additionNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\arithmetic\divisionNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\relational\greaterorequalNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\relational\greaterthanNode.cs" />
+    <Compile Include="Exceptions\ExceptionClasses\InvalidFactorFound.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\shift\leftshiftNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\relational\lessorequalNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\relational\lessthanNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\arithmetic\modulusNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\arithmetic\multiplicationNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\numberNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\shift\rightshiftNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\equality\equalNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\bit\borNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\bit\bxorNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\logical\andNode.cs" />
+    <Compile Include="Exceptions\exceptionMaster.cs" />
+    <Compile Include="Exceptions\ExceptionClasses\EndOfFileException.cs" />
+    <Compile Include="Exceptions\ExceptionClasses\ExpectedTokenException.cs" />
+    <Compile Include="Exceptions\ExceptionClasses\ParserRunOutOfTokens.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\equality\notequalNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\logical\orNode.cs" />
+    <Compile Include="Parsing\Core\parserHolder.cs" />
+    <Compile Include="Parsing\Core\parserTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\bOperationNode.cs" />
+    <Compile Include="Semantics\Tree\Expression\expressionNode.cs" />
+    <Compile Include="Semantics\Tree\Statements\statementNode.cs" />
+    <Compile Include="Semantics\Tree\Statements\unknownStatement.cs" />
+    <Compile Include="Semantics\Types\literalTypes\boolType.cs" />
+    <Compile Include="Semantics\Types\literalTypes\characterType.cs" />
+    <Compile Include="Semantics\Types\literalTypes\floatType.cs" />
+    <Compile Include="Semantics\Types\literalTypes\htmlType.cs" />
+    <Compile Include="Semantics\Types\literalTypes\structType.cs" />
+    <Compile Include="Semantics\Types\nodeType.cs" />
+    <Compile Include="Semantics\Tree\Expression\operationNodes\calculationNodes\arithmetic\substractionNode.cs" />
+    <Compile Include="Semantics\Types\literalTypes\numberType.cs" />
+    <Compile Include="Semantics\Types\literalTypes\stringType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\lexiCONOMICON\lexiCONOMICON.csproj">
-      <Project>{175FAD0A-4360-405C-8C40-28C7667DEBA9}</Project>
+      <Project>{175fad0a-4360-405c-8c40-28c7667deba9}</Project>
       <Name>lexiCONOMICON</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

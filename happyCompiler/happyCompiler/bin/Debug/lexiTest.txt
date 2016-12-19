@@ -1,5 +1,33 @@
 <div>
-  <% string whatHaveIDone = "Fuck my Life";%>
- 
-  <% print(whatHaveIDone); %>
+<% 
+  bool a = 10 > 11;
+  int b = 10 + 1;
+
+  float c = 1.1 * 2.2 ;
+  char e = 'e';
+  string d = 'e' + 'd';
+  
+  assign b = 20 + 2;
+
+  if(a){
+   %>
+	<div>"IF WORKS"</div>
+   <%
+  }
+  else
+  {
+    %>
+	<div>"ELSE WORKS"</div>
+    <%
+  }
+
+  for(int f = 0; f <= 10; assign f = f + 1;)
+  {
+     %>
+	<div>"FOR WORKS"</div>
+     <%
+  }
+
+
+  %>
 </div>

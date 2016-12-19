@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using lexiCONOMICON;
 using parSEER;
+
 
 namespace happyCompiler
 {
@@ -17,8 +15,16 @@ namespace happyCompiler
             var lexiConomicon = new nlexiEngine(path,Encoding.UTF8);
             lexiConomicon.GenerateAllTokens();
             lexiConomicon.PrintTokens();
-            var parSEER = new parserEngine(lexiConomicon._generatedTokens);
+            var parSEER = new parserTools(lexiConomicon._generatedTokens);
             parSEER.parse();
+            var compileEngy = new compilerEngine
+            {
+                _generatedStatements = parSEER.holder.generatedStatementNodes
+            };
+
+            compileEngy.compile();
+
+
             Console.ReadKey();
 
         }

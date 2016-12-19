@@ -9,7 +9,7 @@ namespace lexiCONOMICON
     public class tokenObject
     {
         public tokenType _type { get; set; }
-        private tokenContent _content { get; set; }
+        public tokenContent _content { get; set; }
         public tokenCoordinates _coordinates { get; set; }
 
         public tokenObject(tokenType type, string content, tokenCoordinates coordinates)

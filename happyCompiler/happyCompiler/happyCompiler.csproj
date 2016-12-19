@@ -55,7 +55,7 @@
       <Name>lexiCONOMICON</Name>
     </ProjectReference>
     <ProjectReference Include="..\parSEER\parSEER.csproj">
-      <Project>{c870cca8-0272-4247-b7d2-b4e9b2ec814b}</Project>
+      <Project>{e744a4c2-ef5b-4d94-ab99-dc8cf9658a05}</Project>
       <Name>parSEER</Name>
     </ProjectReference>
   </ItemGroup>

@@ -129,7 +129,7 @@ namespace lexiCONOMICON
             {
                 case "COMMENTBLOCK":
                     return ProcessCommentBlock();
-                    break;
+                    
                 case "DEPTHZERO":
                     
                     goto default;
@@ -183,14 +183,14 @@ namespace lexiCONOMICON
                             switch (IdentifyCharacter(_currentCharacterRead))
                             {
                                 case "LETTER":
-                                    return ProcessWord(); break;
+                                    return ProcessWord(); 
                                 case "DIGIT":
                                     return ProcessNumber();
-                                    break;
+                                    
                                 case "PUNCTUATION": 
                                 case "SYMBOL":
                                     return ProcessSymbolsAndPunctuations();
-                                    break;
+                                    
                             }   
                         }
                     }
@@ -265,10 +265,10 @@ namespace lexiCONOMICON
                         break;
                     case "\'":
                         return ProcessCharacter();
-                        break;
+                        
                     case "\"":
                         return ProcessString();
-                        break;
+                        
                     case "#":
                         if (char.IsDigit(_nextCharacterRead)) { return ProcessDate(); }
                         break;
@@ -331,7 +331,6 @@ namespace lexiCONOMICON
             return newToken;
         }
 
-
         private tokenObject ProcessDate()
         {
             _currentLexeme = _currentCharacterRead.ToString();
@@ -354,8 +353,9 @@ namespace lexiCONOMICON
 
         private tokenObject ProcessString()
         {
+            AdvanceCursors();
             _currentLexeme = _currentCharacterRead.ToString();
-
+           
             while (_nextCharacterRead != '"')
             {
                 AdvanceCursors();
@@ -363,11 +363,12 @@ namespace lexiCONOMICON
                 {
 
                 }
-                else
-                _currentLexeme += _currentCharacterRead.ToString();
+                else         
+                 _currentLexeme += _currentCharacterRead.ToString();
+                
             }
             AdvanceCursors();
-            _currentLexeme += _currentCharacterRead.ToString();
+            //_currentLexeme += _currentCharacterRead.ToString();
 
 
             var newToken = new tokenObject(tokenType.literal_STRING, _currentLexeme, _lastLocation);
@@ -378,19 +379,23 @@ namespace lexiCONOMICON
 
         private tokenObject ProcessCharacter()
         {
-            _currentLexeme = _currentCharacterRead.ToString();
+            
             AdvanceCursors();
-            if(_currentCharacterRead == '\\')
+             _currentLexeme = _currentCharacterRead.ToString();
+            /*
+            if (_currentCharacterRead == '\\')
             {
-                _currentLexeme += _currentCharacterRead.ToString();
                 AdvanceCursors();
+                _currentLexeme += _currentCharacterRead.ToString();
+                
             }
-            _currentLexeme += _currentCharacterRead.ToString();
+            */
+            //_currentLexeme += _currentCharacterRead.ToString();
             AdvanceCursors();
 
             if (_currentCharacterRead != '\''){throw new Exception("Character Too Long or Not Closed At: " + _lastLocation);}
 
-            _currentLexeme += _currentCharacterRead.ToString();
+          //  _currentLexeme += _currentCharacterRead.ToString();
             var returnToken = new tokenObject(tokenType.literal_CHARACTER, _currentLexeme, _lastLocation);
             ClearContent();
             return returnToken;
@@ -451,10 +456,10 @@ namespace lexiCONOMICON
                             goto case "ADVANCE";
                         case "HEXADECIMAL":
                             throw new Exception("HEXADECIMALS CAN NOT CONTAIN PERIODS. " + _lastLocation);
-                            break;
+                            
                         case "FLOAT":
                             throw new Exception("FLOATS DO NOT HAVE MULTIPLE DOTS. " + _lastLocation);
-                            break;
+                            
                     }
                 }
                 if (char.IsDigit(_nextCharacterRead))
@@ -480,10 +485,10 @@ namespace lexiCONOMICON
                                     goto case "ADVANCE";
                                 case "HEXADECIMAL":
                                     throw new Exception("HEXADECIMALS CAN NOT CONTAIN PERIODS. " + _lastLocation);
-                                    break;
+                                    
                                 case "FLOAT":
                                     throw new Exception("FLOATS DO NOT HAVE MULTIPLE DOTS. " + _lastLocation);
-                                    break;
+                                    
                             }
                         }
                     }
@@ -502,11 +507,9 @@ namespace lexiCONOMICON
             }
             else
             {
-                while (char.IsDigit(_nextCharacterRead))
+                while (char.IsDigit(_nextCharacterRead) || _nextCharacterRead == '.')
                 {
-                    AdvanceCursors();
-                    _currentLexeme += _currentCharacterRead;
-                    if (_nextCharacterRead == '.')
+                    if (_nextCharacterRead.ToString() == ".")
                     {
                         switch (whatKindOfNumberIsIt)
                         {
@@ -522,12 +525,15 @@ namespace lexiCONOMICON
                                 goto case "ADVANCE";
                             case "HEXADECIMAL":
                                 throw new Exception("HEXADECIMALS CAN NOT CONTAIN PERIODS. " + _lastLocation);
-                                break;
+
                             case "FLOAT":
                                 throw new Exception("FLOATS DO NOT HAVE MULTIPLE DOTS. " + _lastLocation);
-                                break;
+
                         }
                     }
+                    AdvanceCursors();
+                    _currentLexeme += _currentCharacterRead;
+                    
                 }
             }
 
