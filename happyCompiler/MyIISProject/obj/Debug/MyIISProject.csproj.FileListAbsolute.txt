@@ -1,0 +1,5 @@
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\MyIISProject\bin\Debug\MyIISProject.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\MyIISProject\bin\Debug\MyIISProject.pdb
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\MyIISProject\obj\Debug\MyIISProject.csprojResolveAssemblyReference.cache
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\MyIISProject\obj\Debug\MyIISProject.dll
+C:\Users\HappyFabian\Documents\happyCompiler\happyCompiler\MyIISProject\obj\Debug\MyIISProject.pdb

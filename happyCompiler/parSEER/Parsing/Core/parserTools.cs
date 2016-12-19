@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using lexiCONOMICON;
+using parSEER.Interpretative.Values;
 using parSEER.Parsing;
 using parSEER.Semantics.Tree.Expression;
 using parSEER.Semantics.Tree.Expression.literalNodes;
 using parSEER.Semantics.Tree.Expression.operationNodes;
 using parSEER.Semantics.Tree.Expression.operationNodes.idcalculationNodes;
 using parSEER.Semantics.Tree.Sentences;
+using parSEER.Semantics.Tree.Statements;
 using parSEER.Semantics.Types;
 using parSEER.Semantics.Types.literalTypes;
 
@@ -54,6 +56,8 @@ namespace parSEER
         }
         private statementNode Statement()
         {
+            var forceValue = false;
+            var canItBeConstant = true;
             switch (holder.getCurrentTokenType())
             {
                 case tokenType.HTML_TOKEN: return HtmlStatement();  
@@ -64,6 +68,11 @@ namespace parSEER
                 //WHILE
                 case tokenType.resword_WHILE: return WhileStatement();
 
+                case tokenType.resword_DO:
+                    return DoWhileStatement();
+
+                case tokenType.resword_PRINT:
+                    return PrintStatement();
                 //FunctionCall
                 case tokenType.ID:
                     var functionCall = functionCallStatement();
@@ -71,15 +80,17 @@ namespace parSEER
                     {
                         return functionCall;
                     }
-                    goto case tokenType.resword_CONST;
+                    goto case tokenType.resword_INT;
                 // Declaration
                 case tokenType.resword_CONST:
+                    forceValue = true;
+                    goto case tokenType.resword_INT;
                 case tokenType.resword_INT:
                 case tokenType.resword_BOOL:
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement();
+                    return DeclarationStatement(forceValue,canItBeConstant);
                 //Assignation
                 case tokenType.assign:
                     return AssignationStatement();
@@ -91,10 +102,79 @@ namespace parSEER
             return new unknownStatement();
         }
 
-        private statementNode functionDeclarationStatement()
+        private statementNode PrintStatement()
         {
             holder.advanceIndex();
+            
+             if (holder.getCurrentTokenType() != tokenType.symbol_openCurlyBraces)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_openCurlyBraces);
+            }
+            holder.advanceIndex();
+            var expression = Expresion();
 
+            if (holder.getCurrentTokenType() != tokenType.symbol_closeCurlyBraces)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_closeCurlyBraces);
+            }
+            holder.advanceIndex();
+
+            return new printStatement {Value = expression};
+        }
+
+
+        private statementNode DoWhileStatement()
+        {
+            //do
+            holder.advanceIndex();
+            //{
+            if (holder.getCurrentTokenType() != tokenType.symbol_openCurlyBraces)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_openCurlyBraces);
+            }
+            holder.advanceIndex();
+
+            //ListOfStatements
+            var dowhileStatements = scopeStatementList();
+            //}
+            if (holder.getCurrentTokenType() != tokenType.symbol_closeCurlyBraces)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_closeCurlyBraces);
+            }
+            holder.advanceIndex();
+
+            if (holder.getCurrentTokenType() != tokenType.resword_WHILE)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.resword_WHILE);
+            }
+            holder.advanceIndex();
+
+            //(
+            if (holder.getCurrentTokenType() != tokenType.symbol_openParenthesis)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_openParenthesis);
+            }
+            holder.advanceIndex();
+
+            var conditionalExpression = Expresion();
+
+            //)
+            if (holder.getCurrentTokenType() != tokenType.symbol_closeParenthesis)
+            {
+                holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_closeParenthesis);
+            }
+            holder.advanceIndex();
+            //;
+            EndOfStatement();
+            return new doWhileStatement {dowhileStatementList =  dowhileStatements, conditionalExpression = conditionalExpression};
+        }
+
+        private statementNode functionDeclarationStatement()
+        {
+            //function
+            holder.advanceIndex();
+
+            //TYPE
             nodeType whatType = null;
             switch (holder.getCurrentTokenType())
             {
@@ -108,27 +188,35 @@ namespace parSEER
                 default: holder.throwException(008,holder.getCurrentToken());
                     break;
             }
+            holder.advanceIndex();
+
             var id = idValue();
+            //(
             if (holder.getCurrentTokenType() != tokenType.symbol_openParenthesis)
             {
                 holder.throwException(003,holder.getCurrentToken(), tokenType.symbol_openParenthesis);
             }
+            holder.advanceIndex();
 
+            //parameters
             var parameters = new List<statementNode>();
             if (holder.getCurrentTokenType() != tokenType.symbol_closeParenthesis)
             {
                  parameters = parameterStatementList();
             }
 
+            //)
             if (holder.getCurrentTokenType() != tokenType.symbol_closeParenthesis)
             {
                 holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_closeParenthesis);
             }
-
+            holder.advanceIndex();
+            //{
             if (holder.getCurrentTokenType() != tokenType.symbol_openCurlyBraces)
             {
                 holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_openCurlyBraces);
             }
+            holder.advanceIndex();
             var scope = scopeStatementList();
 
 
@@ -136,7 +224,7 @@ namespace parSEER
             {
                 holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_closeCurlyBraces);
             }
-
+            holder.advanceIndex();
 
 
             return new functionDeclarativeStatement
@@ -153,9 +241,13 @@ namespace parSEER
             var statementNode = parameterStatement();
             if (statementNode.GetType() != typeof(unknownStatement))
             {
-                var statementList = scopeStatementList();
+                var statementList = new List<statementNode>();
+                if(holder.getCurrentTokenType() == tokenType.symbol_SEPARATOR) { 
+                    statementList = parameterStatementList();
+                }
                 statementList.Insert(0, statementNode);
                 return statementList;
+                   
             }
 
             return new List<statementNode>();
@@ -171,7 +263,7 @@ namespace parSEER
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement(false,false);
+                    return DeclarationStatement(false,false,false);
 
             }
 
@@ -192,14 +284,23 @@ namespace parSEER
         }
         private statementNode scopeStatement()
         {
+            var forceValue = false;
+            var canItBeConstant = false;
             switch (holder.getCurrentTokenType())
             {
                 case tokenType.HTML_TOKEN: return HtmlStatement();
+                //IF
                 case tokenType.resword_IF: return IfStatement();
+                //FOR
                 case tokenType.resword_FOR: return ForStatement();
                 //WHILE
                 case tokenType.resword_WHILE: return WhileStatement();
 
+                case tokenType.resword_DO:
+                    return DoWhileStatement();
+
+                case tokenType.resword_PRINT:
+                    return PrintStatement();
                 //FunctionCall
                 case tokenType.ID:
                     var functionCall = functionCallStatement();
@@ -207,7 +308,7 @@ namespace parSEER
                     {
                         return functionCall;
                     }
-                    goto case tokenType.resword_CONST;
+                    goto case tokenType.resword_INT;
                 // Declaration
                 case tokenType.resword_CONST:
                 case tokenType.resword_INT:
@@ -215,13 +316,30 @@ namespace parSEER
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement();
+                    return DeclarationStatement(forceValue,canItBeConstant);
                 //Assignation
                 case tokenType.assign:
                     return AssignationStatement();
+
+                //Return
+                case tokenType.resword_RETURN:
+                    return ReturnStatement();
             }
 
             return new unknownStatement();
+        }
+
+        private statementNode ReturnStatement()
+        {
+            holder.advanceIndex();
+            expressionNode expression = null;
+            if (holder.getCurrentTokenType() != tokenType.symbol_EndOfStatement)
+            {
+                expression = Expresion();
+            }
+            EndOfStatement();
+
+            return new returnStatement {Value = expression};
         }
 
 
@@ -253,7 +371,7 @@ namespace parSEER
             EndOfStatement();
             return new assignationStatement {Id = idNode, Value = value};
         }
-        private statementNode DeclarationStatement(bool forceValue = false, bool canItBeConstant = true)
+        private statementNode DeclarationStatement(bool forceValue = false, bool canItBeConstant = true, bool withEOS = true)
         {
             //const variableType id = value;
             // variableType id = value;
@@ -284,7 +402,11 @@ namespace parSEER
                 value = Expresion();
             }
 
-            EndOfStatement();
+            if (withEOS)
+            {
+                EndOfStatement();
+            }
+
             return new declarativeStatement {Constant = isItConstant, ID = idNode, Type = whatType, Value = value};
         }
 
@@ -468,7 +590,7 @@ namespace parSEER
         {
             var htmlValue = holder.getCurrentToken();
             holder.advanceIndex();
-            var htmlNode = new htmlNode { Value = htmlValue };
+            var htmlNode = new htmlNode { Value = htmlValue._content.getValue() };
             return htmlNode;
         }
 
@@ -799,12 +921,8 @@ namespace parSEER
                 List<expressionNode> parameterCalled = null;
                 if (holder.getCurrentTokenType() != tokenType.symbol_closeParenthesis)
                 {
-
                     parameterCalled = parameterCallList();
-
-                }
-    
-                            
+                }                     
                 if (holder.getCurrentTokenType() != tokenType.symbol_closeParenthesis)
                 {
                     holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_arrayClose);
@@ -836,17 +954,22 @@ namespace parSEER
             return new functionCallNode { ID = param, parameters = parameterCalled };
         }
 
-
-
-
         private List<expressionNode> parameterCallList()
         {
-            List<expressionNode> list = new List<expressionNode>();           
-            do
+            List<expressionNode> list = new List<expressionNode>();
+            if (holder.getCurrentTokenType() == tokenType.symbol_closeParenthesis)
+            {
+                return list;
+            }
+            else
             {
                 list.Add(Expresion());
             }
-            while (holder.getCurrentTokenType() == tokenType.symbol_SEPARATOR);
+            while (holder.getCurrentTokenType() == tokenType.symbol_SEPARATOR)
+            {
+                holder.advanceIndex();
+                list.Add(Expresion());
+            }
             return list;
         }
 

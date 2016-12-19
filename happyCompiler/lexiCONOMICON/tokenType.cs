@@ -94,6 +94,7 @@
         resword_DEFAULT,
         HTML_TOKEN,
         reloper_EQUAL,
-        assign
+        assign,
+        resword_PRINT
     }
 }

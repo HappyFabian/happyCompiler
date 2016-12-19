@@ -11,7 +11,7 @@ namespace happyCompiler
         public static void Main(string[] args)
         {
 
-            var path = args.Length == 0 ? "lexiTest.txt" : args[0];
+            var path = args.Length == 0 ? @"C:\Users\HappyFabian\Documents\compileFiles\lexiTest.txt" : args[0];
             var lexiConomicon = new nlexiEngine(path,Encoding.UTF8);
             lexiConomicon.GenerateAllTokens();
             lexiConomicon.PrintTokens();
@@ -23,9 +23,10 @@ namespace happyCompiler
             };
 
             compileEngy.compile();
-
-
+           
             Console.ReadKey();
+
+
 
         }
     }

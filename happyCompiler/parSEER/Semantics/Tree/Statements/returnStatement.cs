@@ -24,7 +24,7 @@ namespace parSEER.Semantics.Tree.Statements
 
         public override void compile()
         {
-            throw new NotImplementedException();
+           
         }
     }
 }

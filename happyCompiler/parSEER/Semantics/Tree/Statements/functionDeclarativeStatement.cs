@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using parSEER.Parsing;
 using parSEER.Parsing.Metadata;
 using parSEER.Semantics.Tree.Expression;
+using parSEER.Semantics.Tree.Expression.literalNodes;
 using parSEER.Semantics.Tree.Sentences;
+using parSEER.Semantics.Tree.Statements;
 using parSEER.Semantics.Types;
 
 namespace parSEER
@@ -20,7 +23,15 @@ namespace parSEER
 
         public override void compile()
         {
-            throw new System.NotImplementedException();
+            contextTable.instance.addNewContext();
+            foreach (var statementNode in parametersDefined)
+            {
+                statementNode.compile();
+            }
+
+
+            contextTable.instance.saveFunction((functionName as idNode).Name, this);
+            contextTable.instance.removeContext();
         }
     }
 }

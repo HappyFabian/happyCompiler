@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using parSEER.Interpretative.Values;
+using parSEER.Parsing.Metadata;
 using parSEER.Semantics.Tree.Expression.literalNodes;
 using parSEER.Semantics.Tree.Sentences;
 using parSEER.Semantics.Types;
@@ -20,13 +21,13 @@ namespace parSEER.Parsing
 
         public static List<contextLayer> contexts;
 
-        public static List<contextLayer> savedFunctions;
+        public static Dictionary<string, functionMetadata> savedFunctions;
 
         public static List<htmlNode> compiledList;
         public contextTable()
         {
             contexts = new List<contextLayer> {new contextLayer()};
-            savedFunctions = new List<contextLayer>();
+            savedFunctions = new Dictionary<string, functionMetadata>();
             compiledList = new List<htmlNode>();
         }
 
@@ -73,6 +74,11 @@ namespace parSEER.Parsing
         {
             contexts.Add(new contextLayer());           
         }
+        public void addNewContext(contextLayer context)
+        {
+            contexts.Add(context);
+        }
+
 
         public void removeContext()
         {
@@ -113,6 +119,27 @@ namespace parSEER.Parsing
         public void AddHTMLStatement(htmlNode value)
         {
             compiledList.Add(value);
+        }
+
+
+        public void saveFunction(string name, functionDeclarativeStatement statement)
+        {
+            var functionMetadata = new functionMetadata();
+            functionMetadata.parameters = getCurrentDepthLayer();
+            functionMetadata.returnType = statement.returnType;
+            functionMetadata.scope = statement.scope;
+            
+            savedFunctions.Add(name, functionMetadata);
+        }
+
+        public nodeType getFunctionType(string name)
+        {
+            return savedFunctions[name].returnType;
+        }
+
+        public functionMetadata getFunction(string name)
+        {
+            return savedFunctions[name];
         }
     }
 }

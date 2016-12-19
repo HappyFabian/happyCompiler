@@ -11,7 +11,7 @@ namespace parSEER.Semantics.Tree.Expression.literalNodes
 {
     public class htmlNode : expressionNode
     {
-        public tokenObject Value { get; set; }
+        public string Value { get; set; }
 
 
         public override nodeType EvaluateTypes()

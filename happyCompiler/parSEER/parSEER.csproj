@@ -48,6 +48,8 @@
     <Compile Include="Interpretative\Values\htmlValue.cs" />
     <Compile Include="Parsing\contextLayer.cs" />
     <Compile Include="Parsing\contextTable.cs" />
+    <Compile Include="Semantics\Tree\Statements\printStatement.cs" />
+    <Compile Include="Semantics\Tree\Statements\doWhileStatement.cs" />
     <Compile Include="Parsing\Metadata\functionMetadata.cs" />
     <Compile Include="Parsing\Metadata\metadataNode.cs" />
     <Compile Include="Parsing\Metadata\variableMetadata.cs" />

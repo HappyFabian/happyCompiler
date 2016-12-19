@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using parSEER.Parsing;
+using parSEER.Parsing.Metadata;
 using parSEER.Semantics.Tree.Expression.literalNodes;
 using parSEER.Semantics.Tree.Sentences;
 
@@ -34,6 +35,23 @@ namespace parSEER
                 generatedStatement.compile();
             }
             Console.WriteLine("Semantic and Interpretation is Done!");
+        }
+
+        public string printResponse()
+        {
+            var returnable = "";
+            foreach (var htmlNode in contextTable.compiledList)
+            {
+                returnable += htmlNode.Value;
+            }
+            return returnable;
+        }
+
+        public void purgeContext()
+        {
+            contextTable.compiledList = new List<htmlNode>();
+            contextTable.savedFunctions = new Dictionary<string, functionMetadata>();
+            contextTable.contexts = new List<contextLayer> { new contextLayer()};
         }
     }
 }

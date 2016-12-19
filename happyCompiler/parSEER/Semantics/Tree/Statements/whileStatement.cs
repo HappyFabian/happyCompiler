@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using parSEER.Interpretative.Values;
 using parSEER.Parsing;
 using parSEER.Semantics.Tree.Expression;
 using parSEER.Semantics.Tree.Sentences;
@@ -36,7 +38,26 @@ namespace parSEER
 
         public override void compile()
         {
-            throw new System.NotImplementedException();
+            contextTable.instance.addNewContext();
+          
+            if (conditionalExpression.EvaluateTypes().GetType() == typeof(boolType))
+            {
+                var conditionInterpreted = conditionalExpression.Interpret();
+                while ((conditionInterpreted as boolValue).Value)
+                {
+                    foreach (var statementNode in whileStatementList)
+                    {
+                        statementNode.compile();
+                    }
+                    conditionInterpreted = conditionalExpression.Interpret();
+                }
+
+            }
+            else
+            {
+                throw new Exception("Invalid type of Conditional Expression");
+            }
+            contextTable.instance.removeContext();
         }
     }
 }

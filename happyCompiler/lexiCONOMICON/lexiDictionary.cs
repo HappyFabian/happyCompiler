@@ -93,6 +93,8 @@ namespace lexiCONOMICON
             _reservedWords.Add("case", tokenType.resword_CASE);
             _reservedWords.Add("assign", tokenType.assign);
 
+
+            _reservedWords.Add("print", tokenType.resword_PRINT);
             _reservedWords.Add("default", tokenType.resword_DEFAULT);
             _reservedWords.Add("foreach", tokenType.resword_FOREACH);
             _reservedWords.Add("break", tokenType.resword_BREAK);
