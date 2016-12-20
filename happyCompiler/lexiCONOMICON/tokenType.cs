@@ -95,6 +95,7 @@
         HTML_TOKEN,
         reloper_EQUAL,
         assign,
-        resword_PRINT
+        resword_PRINT,
+        resword_DEF
     }
 }

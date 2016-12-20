@@ -25,7 +25,59 @@ namespace parSEER.Semantics.Tree.Expression.operationNodes.idcalculationNodes
         public override nodeValue Interpret()
         {
             var functionCalled  =  contextTable.instance.getFunction((ID as idNode).Name);
+            contextTable.instance.addNewContext(functionCalled.parameters);
+            var parametersExpected =  functionCalled.parameters.contextMetadata;
+            if (parameters.Count == parametersExpected.Count)
+            {
+                int i = 0;
+                foreach (variableMetadata metadataNode in parametersExpected)
+                {
+                    var parameterToProcess = parameters[i];
+                    if (parameterToProcess.GetType() == typeof(defNode) && metadataNode.value != null)
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        if (parameterToProcess.GetType() == typeof(defNode) && metadataNode.value == null)
+                        {
+                            throw new Exception("Default parameter value not defined.");
+                        }
+ 
+                        if (parameterToProcess.EvaluateTypes().GetType() == metadataNode.type.GetType())
+                        {
+                            contextTable.instance.changeVariableValueOnCurrentContext(metadataNode.variableName, parameters[i].Interpret());
+                            i++;
+                        }
+                        else
+                        {
+                            throw new Exception("Invalid parameter passed.");
+                        }
+                        
+                    }
+  
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid amount of Parameters found. Expected: " + parametersExpected.Count + " Found: " + parameters.Count);
+            }
+            foreach (var statementNode in functionCalled.scope)
+            {
+                if (contextTable.returnValueWas == null)
+                {
+                    statementNode.compile();
+                }
+            }
+            contextTable.instance.removeContext();
+            if (functionCalled.returnType.GetDefaultValue().GetType() == contextTable.returnValueWas.GetType())
+            {
+                var returnValue = contextTable.returnValueWas;
+                contextTable.returnValueWas = null;
+                return returnValue;
+            }
 
+            /*
             contextTable.instance.addNewContext(functionCalled.parameters);
             var currentDepth = contextTable.instance.getCurrentDepthLayer();
             for (int i = 0; i < currentDepth.contextMetadata.Count; i++)
@@ -54,8 +106,10 @@ namespace parSEER.Semantics.Tree.Expression.operationNodes.idcalculationNodes
                 contextTable.instance.removeContext();
                 return null;
             }
-
+            
+            */
             throw new Exception("Function called failed.");
+            
         }
     }
 }

@@ -68,7 +68,7 @@ namespace parSEER.Parsing
 
             variableMD.variableName = (statement.ID as idNode).Name;
             variableMD.type = statement.Type;
-            if (statement.Constant)
+            if (statement.Constant || statement.Value != null )
             {
                 variableMD.value = statement.Value.Interpret();
             }
@@ -81,7 +81,7 @@ namespace parSEER.Parsing
             
         }
 
-        private metadataNode searchMetadataOnCurrentLevel(string name)
+        public metadataNode searchMetadataOnCurrentLevel(string name)
         {
             if (contexts[maxDepth()].contextMetadata.Count > 0)
             {
@@ -165,13 +165,23 @@ namespace parSEER.Parsing
 
         public functionMetadata getFunction(string name)
         {
-            return savedFunctions[name];
+            
+            functionMetadata foundFunction = savedFunctions[name];
+            functionMetadata returnableFunction = new functionMetadata
+            {
+                parameters = new contextLayer { contextMetadata = new List<metadataNode>(foundFunction.parameters.contextMetadata)},
+                returnType = foundFunction.returnType,
+                scope = foundFunction.scope,
+                type = foundFunction.type,
+                variableName = foundFunction.variableName
+            };
+            return returnableFunction;
         }
 
-        public nodeValue returnValueWas { get; set; }
+        public static nodeValue returnValueWas;
         public void returnValueIs(nodeValue interpret)
         {
-            throw new NotImplementedException();
+            returnValueWas = interpret;
         }
     }
 }

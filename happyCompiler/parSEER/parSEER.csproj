@@ -46,8 +46,10 @@
     <Compile Include="Interpretative\Values\charValue.cs" />
     <Compile Include="Interpretative\Values\floatValue.cs" />
     <Compile Include="Interpretative\Values\htmlValue.cs" />
+    <Compile Include="Interpretative\Values\voidValue.cs" />
     <Compile Include="Parsing\contextLayer.cs" />
     <Compile Include="Parsing\contextTable.cs" />
+    <Compile Include="Semantics\Tree\Expression\literalNodes\defNode.cs" />
     <Compile Include="Semantics\Tree\Statements\printStatement.cs" />
     <Compile Include="Semantics\Tree\Statements\doWhileStatement.cs" />
     <Compile Include="Parsing\Metadata\functionMetadata.cs" />

@@ -31,7 +31,10 @@ namespace parSEER
                     conditionInterpreted = conditionalExpression.Interpret();
                     foreach (var statementNode in dowhileStatementList)
                     {
-                        statementNode.compile();
+                        if (contextTable.returnValueWas == null)
+                        {
+                            statementNode.compile();
+                        }
                     }
 
                 } while ((conditionInterpreted as boolValue).Value);

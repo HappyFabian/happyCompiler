@@ -47,7 +47,10 @@ namespace parSEER
                 {
                     foreach (var statementNode in whileStatementList)
                     {
-                        statementNode.compile();
+                        if (contextTable.returnValueWas == null)
+                        {
+                            statementNode.compile();
+                        }
                     }
                     conditionInterpreted = conditionalExpression.Interpret();
                 }

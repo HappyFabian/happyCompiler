@@ -826,6 +826,11 @@ namespace parSEER
         private expressionNode factorTerm()
         {
             //(Expression)
+            if (holder.getCurrentTokenType() == tokenType.resword_DEF)
+            {
+                holder.advanceIndex();
+                return new defNode();
+            }
             if (holder.getCurrentTokenType() == tokenType.symbol_openParenthesis)
             {
                 holder.advanceIndex();

@@ -19,7 +19,7 @@ namespace parSEER.Semantics.Tree.Sentences
 
         public override void compile()
         {
-            throw new NotImplementedException();
+            functionCalled.Interpret();
         }
     }
 }

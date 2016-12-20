@@ -10,7 +10,7 @@ namespace parSEER
         {
             if (LeftOperand.EvaluateTypes().GetType() == RightOperand.EvaluateTypes().GetType())
             {
-                return LeftOperand.EvaluateTypes();
+                return new boolType();
             }
 
             exceptionMaster.throwException(009);

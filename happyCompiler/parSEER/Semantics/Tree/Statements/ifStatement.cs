@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using parSEER.Interpretative.Values;
 using parSEER.Parsing;
@@ -57,7 +58,10 @@ namespace parSEER
                     contextTable.instance.addNewContext();
                     foreach (var trueStatementNode in TrueStatementNodes)
                     {
-                        trueStatementNode.compile();
+                        if (contextTable.returnValueWas == null)
+                        {
+                            trueStatementNode.compile();
+                        }
                     }
                     contextTable.instance.removeContext();
                 }
@@ -66,10 +70,17 @@ namespace parSEER
                     contextTable.instance.addNewContext();
                     foreach (var falseStatementNode in FalseStatementNodes)
                     {
-                        falseStatementNode.compile();
+                        if (contextTable.returnValueWas == null)
+                        {
+                            falseStatementNode.compile();
+                        }
                     }
                     contextTable.instance.removeContext();
                 }
+            }
+            else
+            {
+                throw new Exception("WHY");
             }
         }
 

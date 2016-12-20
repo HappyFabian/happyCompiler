@@ -31,8 +31,7 @@ namespace parSEER.Semantics.Tree.Sentences
                 {
                     statementNode.EvaluateSemantics();
                 }
-
-                interpretedContextLayer = contextTable.instance.getCurrentDepthLayer();
+                
                 contextTable.instance.removeContext();
                 return null;
             }
@@ -52,7 +51,10 @@ namespace parSEER.Semantics.Tree.Sentences
                 {
                     foreach (var statementNode in forStatementsList)
                     {
-                        statementNode.compile();
+                        if(contextTable.returnValueWas == null)
+                        { 
+                           statementNode.compile();
+                        }
                     }                  
                     assignationStatement.compile();
                 }
