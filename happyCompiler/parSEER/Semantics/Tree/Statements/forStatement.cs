@@ -18,9 +18,8 @@ namespace parSEER.Semantics.Tree.Sentences
 
         public List<statementNode> forStatementsList { get; set; }
 
+        
 
-
-        public contextLayer interpretedContextLayer;
         public override nodeType EvaluateSemantics()
         {
             contextTable.instance.addNewContext();
@@ -47,7 +46,8 @@ namespace parSEER.Semantics.Tree.Sentences
             declarationStatement.compile();
             if (comparativeExpression.EvaluateTypes().GetType() == typeof(boolType))
             {
-                var conditionInterpreted = comparativeExpression.Interpret();    
+                var conditionInterpreted = comparativeExpression.Interpret();   
+                 
                 while ((comparativeExpression.Interpret() as boolValue).Value)
                 {
                     foreach (var statementNode in forStatementsList)

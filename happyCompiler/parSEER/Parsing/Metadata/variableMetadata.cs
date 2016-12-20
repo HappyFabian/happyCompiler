@@ -11,7 +11,7 @@ namespace parSEER.Parsing
 {
     class variableMetadata : metadataNode
     {
-       
+        public bool isItConstant;
         public nodeValue value { get; set; }
     }
 }

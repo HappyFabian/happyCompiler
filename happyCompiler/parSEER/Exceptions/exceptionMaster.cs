@@ -13,6 +13,7 @@ namespace parSEER
         {
             switch (flag)
             {
+                case 012: throw new Exception("A constant variable has been defined already");
                 case 011: throw new Exception("Invalid If Condition.");
                 case 010: throw new Exception("Variable has already been previously define.");
                 case 009: throw new Exception("Invalid Value assiged to Variable.");

@@ -28,8 +28,6 @@ namespace parSEER.Semantics.Tree.Expression.operationNodes.idcalculationNodes
 
             contextTable.instance.addNewContext(functionCalled.parameters);
             var currentDepth = contextTable.instance.getCurrentDepthLayer();
-          
-
             for (int i = 0; i < currentDepth.contextMetadata.Count; i++)
             {
                 if (parameters[i].EvaluateTypes().GetType() == currentDepth.contextMetadata[i].type.GetType())

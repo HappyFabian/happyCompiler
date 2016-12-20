@@ -51,18 +51,47 @@ namespace parSEER.Parsing
 
         public void addVariableDefinitonToCurrentContext(declarativeStatement  statement)
         {
+            var smd = searchMetadata((statement.ID as idNode).Name);
+            if(smd != null)
+            { 
+                if ((searchMetadata((statement.ID as idNode).Name) as variableMetadata).isItConstant)
+                {
+                    exceptionMaster.throwException(010);
+                }
+            }
 
             var variableMD = new variableMetadata();
-            if (searchMetadata((statement.ID as idNode).Name) != null)
+            if (searchMetadataOnCurrentLevel((statement.ID as idNode).Name) != null)
             {
-                // dummy
                 exceptionMaster.throwException(010);
             }
 
             variableMD.variableName = (statement.ID as idNode).Name;
             variableMD.type = statement.Type;
-            variableMD.value = statement.Type.GetDefaultValue();
+            if (statement.Constant)
+            {
+                variableMD.value = statement.Value.Interpret();
+            }
+            else
+            {
+                variableMD.value = statement.Type.GetDefaultValue();
+            }
+            variableMD.isItConstant = statement.Constant;
             contexts[maxDepth()].addVariable(variableMD);
+            
+        }
+
+        private metadataNode searchMetadataOnCurrentLevel(string name)
+        {
+            if (contexts[maxDepth()].contextMetadata.Count > 0)
+            {
+                var returnable = contexts[maxDepth()].contextMetadata.Find(n => n.variableName == name);
+                if (returnable != null)
+                {
+                    return returnable;
+                }
+            }
+            return null;
         }
 
         public contextLayer getCurrentDepthLayer()
@@ -96,22 +125,19 @@ namespace parSEER.Parsing
             for (var currentDepth = maxDepth(); currentDepth >= 0; currentDepth--)
             {
                 if (contexts[currentDepth].contextMetadata.Count > 0)
-                {
+                { 
                     var returnable = contexts[currentDepth].contextMetadata.Find(n => n.variableName == name);
                     if (returnable != null)
                     {
-                        if (contexts[currentDepth].contextMetadata.Find(n => n.variableName == name) is variableMetadata)
-                        {
-                            (contexts[currentDepth].contextMetadata.Find(n => n.variableName == name) as
-                                variableMetadata).value = interpret;
-                        }
-                        else
-                        {
+                        if (!(returnable is variableMetadata))
                             throw new Exception("You can't define a new value to something different that a variable. Goof.");
-                        }
+                        if ((returnable as variableMetadata).isItConstant)
+                            throw new Exception("You can't override a constant variable.");
+                        (contexts[currentDepth].contextMetadata.Find(n => n.variableName == name) as
+                            variableMetadata).value = interpret;
+                        return;
                     }
                 }
-
             }
 
         }
@@ -140,6 +166,12 @@ namespace parSEER.Parsing
         public functionMetadata getFunction(string name)
         {
             return savedFunctions[name];
+        }
+
+        public nodeValue returnValueWas { get; set; }
+        public void returnValueIs(nodeValue interpret)
+        {
+            throw new NotImplementedException();
         }
     }
 }

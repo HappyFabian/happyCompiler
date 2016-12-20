@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using parSEER.Parsing;
 using parSEER.Semantics.Tree.Expression;
 using parSEER.Semantics.Tree.Sentences;
 using parSEER.Semantics.Types;
@@ -24,7 +25,7 @@ namespace parSEER.Semantics.Tree.Statements
 
         public override void compile()
         {
-           
+            contextTable.instance.returnValueIs(Value.Interpret());
         }
     }
 }

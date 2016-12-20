@@ -15,6 +15,8 @@ namespace parSEER
         public List<statementNode> TrueStatementNodes;
         public List<statementNode> FalseStatementNodes;
 
+        public nodeValue value = null;
+
         public override nodeType EvaluateSemantics()
         {
 

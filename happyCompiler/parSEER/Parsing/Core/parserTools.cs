@@ -56,7 +56,6 @@ namespace parSEER
         }
         private statementNode Statement()
         {
-            var forceValue = false;
             var canItBeConstant = true;
             switch (holder.getCurrentTokenType())
             {
@@ -83,14 +82,12 @@ namespace parSEER
                     goto case tokenType.resword_INT;
                 // Declaration
                 case tokenType.resword_CONST:
-                    forceValue = true;
-                    goto case tokenType.resword_INT;
                 case tokenType.resword_INT:
                 case tokenType.resword_BOOL:
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement(forceValue,canItBeConstant);
+                    return DeclarationStatement(canItBeConstant);
                 //Assignation
                 case tokenType.assign:
                     return AssignationStatement();
@@ -263,7 +260,7 @@ namespace parSEER
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement(false,false,false);
+                    return DeclarationStatement(false,false);
 
             }
 
@@ -284,7 +281,6 @@ namespace parSEER
         }
         private statementNode scopeStatement()
         {
-            var forceValue = false;
             var canItBeConstant = false;
             switch (holder.getCurrentTokenType())
             {
@@ -310,13 +306,12 @@ namespace parSEER
                     }
                     goto case tokenType.resword_INT;
                 // Declaration
-                case tokenType.resword_CONST:
                 case tokenType.resword_INT:
                 case tokenType.resword_BOOL:
                 case tokenType.resword_CHAR:
                 case tokenType.resword_STRING:
                 case tokenType.resword_FLOAT:
-                    return DeclarationStatement(forceValue,canItBeConstant);
+                    return DeclarationStatement(canItBeConstant);
                 //Assignation
                 case tokenType.assign:
                     return AssignationStatement();
@@ -371,7 +366,7 @@ namespace parSEER
             EndOfStatement();
             return new assignationStatement {Id = idNode, Value = value};
         }
-        private statementNode DeclarationStatement(bool forceValue = false, bool canItBeConstant = true, bool withEOS = true)
+        private statementNode DeclarationStatement(bool canItBeConstant = true, bool withEOS = true)
         {
             //const variableType id = value;
             // variableType id = value;
@@ -379,6 +374,9 @@ namespace parSEER
             var isItConstant = false;
             if (canItBeConstant) { 
              isItConstant = holder.getCurrentTokenType() == tokenType.resword_CONST;
+                if (isItConstant) { 
+                    holder.advanceIndex();
+                }
             }
             nodeType whatType = null;
             switch (holder.getCurrentTokenType())
@@ -396,12 +394,23 @@ namespace parSEER
             holder.advanceIndex();
             var idNode = idValue();
             expressionNode value = null;
-            if ((holder.getCurrentTokenType() == tokenType.symbol_Assignator) || forceValue )
+            if ( isItConstant )
             {
+                if (holder.getCurrentTokenType() != tokenType.symbol_Assignator)
+                {
+                    exceptionMaster.throwException(003,holder.getCurrentToken(), tokenType.symbol_Assignator);
+                }
                 holder.advanceIndex();
                 value = Expresion();
             }
-
+            else
+            {
+                if (holder.getCurrentTokenType() == tokenType.symbol_Assignator)
+                {
+                    holder.advanceIndex();
+                    value = Expresion();
+                }
+            }
             if (withEOS)
             {
                 EndOfStatement();
@@ -460,7 +469,7 @@ namespace parSEER
             holder.advanceIndex();
 
             //Declaration;
-            var Declaration = DeclarationStatement(true);
+            var Declaration = DeclarationStatement(false);
 
             //Expression;
             var Expression = Expresion();
