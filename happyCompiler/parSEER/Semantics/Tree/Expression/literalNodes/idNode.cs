@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using lexiCONOMICON;
 using parSEER.Interpretative.Values;
 using parSEER.Parsing;
+using parSEER.Parsing.Metadata;
 using parSEER.Semantics.Types;
 
 namespace parSEER.Semantics.Tree.Expression.literalNodes
@@ -26,6 +27,10 @@ namespace parSEER.Semantics.Tree.Expression.literalNodes
             if (returnedMetadata is variableMetadata)
             {
                 return (returnedMetadata as variableMetadata).value;
+            }
+            if (returnedMetadata is variableArrayMetadata)
+            {
+                return new numberValue {Value = (returnedMetadata as variableArrayMetadata).arryValues.Length };
             }
             return null;
         }

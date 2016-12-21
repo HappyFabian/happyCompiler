@@ -35,12 +35,6 @@ namespace parSEER.Semantics.Tree.Sentences
             if (Value == null || Value.EvaluateTypes().GetType() == Type.GetType())
             {
                 contextTable.instance.addVariableDefinitonToCurrentContext(this);
-/*
-                if (Value != null && !Constant)
-                {
-                   contextTable.instance.changeVariableValueOnCurrentContext((ID as idNode).Name,Value.Interpret());
-                }
-*/
                 return;
             }
 

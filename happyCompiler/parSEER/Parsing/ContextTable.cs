@@ -9,6 +9,7 @@ using parSEER.Interpretative.Values;
 using parSEER.Parsing.Metadata;
 using parSEER.Semantics.Tree.Expression.literalNodes;
 using parSEER.Semantics.Tree.Sentences;
+using parSEER.Semantics.Tree.Statements;
 using parSEER.Semantics.Types;
 
 namespace parSEER.Parsing
@@ -182,6 +183,50 @@ namespace parSEER.Parsing
         public void returnValueIs(nodeValue interpret)
         {
             returnValueWas = interpret;
+        }
+
+        public void addArrayDefinition(declarativeArrayStatement statement)
+        {
+            var smd = searchMetadata((statement.Name as idNode).Name);
+            if (smd != null)
+            {
+                if ((searchMetadata((statement.Name as idNode).Name) as variableMetadata).isItConstant)
+                {
+                    exceptionMaster.throwException(010);
+                }
+                if ((searchMetadata((statement.Name as idNode).Name) as variableArrayMetadata).isItConstant)
+                {
+                    exceptionMaster.throwException(010);
+                }
+            }
+
+            var variableAM = new variableArrayMetadata();
+            variableAM.arryValues = new nodeValue[(statement.size.Interpret() as numberValue).Value];
+            variableAM.isItConstant = statement.Constant;
+            variableAM.type = statement.Type;
+            variableAM.variableName = (statement.Name as idNode).Name;
+            contexts[maxDepth()].addVariable(variableAM);
+        }
+
+        public void changeVariableArrayValueOnCurrentContext(string name, int value, nodeValue interpret)
+        {
+            for (var currentDepth = maxDepth(); currentDepth >= 0; currentDepth--)
+            {
+                if (contexts[currentDepth].contextMetadata.Count > 0)
+                {
+                    var returnable = contexts[currentDepth].contextMetadata.Find(n => n.variableName == name);
+                    if (returnable != null)
+                    {
+                        if (!(returnable is variableArrayMetadata))
+                            throw new Exception("You can't define a new value to something different that a variable. Goof.");
+                        if ((returnable as variableArrayMetadata).isItConstant)
+                            throw new Exception("You can't override a constant variable.");
+                        (contexts[currentDepth].contextMetadata.Find(n => n.variableName == name) as
+                            variableArrayMetadata).arryValues[value] = interpret;
+                        return;
+                    }
+                }
+            }
         }
     }
 }

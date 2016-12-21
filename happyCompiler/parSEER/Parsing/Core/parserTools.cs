@@ -355,6 +355,27 @@ namespace parSEER
         {
             holder.advanceIndex();
             var idNode = idValue();
+            if (holder.getCurrentTokenType() == tokenType.symbol_arrayOpen)
+            {
+                holder.advanceIndex();
+                var expresion = Expresion();
+                if (holder.getCurrentTokenType() != tokenType.symbol_arrayClose)
+                {
+                    holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_arrayClose);
+                }
+                holder.advanceIndex();
+                if (holder.getCurrentTokenType() != tokenType.symbol_Assignator)
+                {
+                    holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_Assignator);
+                }
+                holder.advanceIndex();
+
+                var val = Expresion();
+                EndOfStatement();
+                return new assignmentArrayStatement {Id = idNode, Address = expresion, Value = val};
+            }
+
+
             if (holder.getCurrentTokenType() != tokenType.symbol_Assignator)
             {
                 holder.throwException(003, holder.getCurrentToken(), tokenType.symbol_Assignator);
@@ -392,6 +413,21 @@ namespace parSEER
                     break;
             }
             holder.advanceIndex();
+
+            if (holder.getCurrentTokenType() == tokenType.symbol_arrayOpen)
+            {
+                holder.advanceIndex();
+                var expression = Expresion();
+                if (holder.getCurrentTokenType() != tokenType.symbol_arrayClose)
+                {
+                    holder.throwException(003,holder.getCurrentToken(), tokenType.symbol_arrayClose);
+                }
+                holder.advanceIndex();
+                var node = idValue();
+                EndOfStatement();
+                return new declarativeArrayStatement {Constant= isItConstant, Name = node, Type = whatType, size = expression};
+            }
+
             var idNode = idValue();
             expressionNode value = null;
             if ( isItConstant )
@@ -912,7 +948,7 @@ namespace parSEER
             }*/
             ;
             //...ID[expression]
-            /*
+          
             if (holder.getCurrentTokenType() == tokenType.symbol_arrayOpen)
             {
                 holder.advanceIndex();
@@ -924,7 +960,6 @@ namespace parSEER
                 holder.advanceIndex();
                 return new arrayNode {LeftOperand = param, RightOperand = valueTerm};
             }
-            */
             ;
             //...ID()
             //...ID(Expression)
